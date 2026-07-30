@@ -89,7 +89,7 @@ export function HabitosView({ dados, persist }) {
                     background: feitoHoje ? "var(--blue)" : "var(--paper)", border: feitoHoje ? "none" : "1px solid var(--line)",
                   }}
                 >
-                  <Check size={16} color={feitoHoje ? "var(--white)" : "var(--ink-soft)"} />
+                  <Check size={16} color={feitoHoje ? "#ffffff" : "var(--ink-soft)"} />
                 </button>
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: 0, fontSize: 14.5, fontWeight: 700 }}>{h.nome}</p>

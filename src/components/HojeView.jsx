@@ -72,7 +72,7 @@ export function HojeView({ dados, persist }) {
                   onClick={() => toggleHabito(h.id)}
                   style={{
                     display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-                    background: feito ? "var(--blue)" : "var(--white)", color: feito ? "var(--white)" : "var(--ink)", border: feito ? "none" : "1px solid var(--line)",
+                    background: feito ? "var(--blue)" : "var(--white)", color: feito ? "#ffffff" : "var(--ink)", border: feito ? "none" : "1px solid var(--line)",
                   }}
                 >
                   {feito ? <Check size={12} /> : <Flame size={12} color="var(--red)" />} {h.nome}

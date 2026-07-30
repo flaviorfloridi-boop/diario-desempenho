@@ -93,7 +93,7 @@ export function ConfiguracoesView({
           Notificações do navegador avisam sobre tarefas próximas enquanto o app está aberto. Instale como app
           (opção no navegador) pra ter uma experiência melhor no celular.
         </p>
-        <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} style={{ color: notifAtivas ? "var(--white)" : "var(--ink)", borderColor: notifAtivas ? "var(--blue)" : "var(--line)" }} onClick={ativarNotificacoes}>
+        <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} style={{ color: notifAtivas ? "#ffffff" : "var(--ink)", borderColor: notifAtivas ? "var(--blue)" : "var(--line)" }} onClick={ativarNotificacoes}>
           {notifAtivas ? "Lembretes ativos" : "Ativar lembretes"}
         </button>
       </div>

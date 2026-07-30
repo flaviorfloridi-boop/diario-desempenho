@@ -67,7 +67,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .df-tab-content { animation: df-fade-in 0.28s cubic-bezier(0.4, 0, 0.2, 1) both; }
 
 /* ---------- layout ---------- */
-.df-topbar { background: var(--black); color: var(--white); position: relative; }
+.df-topbar { background: var(--black); color: #ffffff; position: relative; }
 .df-topbar::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
   background: linear-gradient(90deg, var(--blue-deep), var(--blue), var(--blue-bright));
@@ -79,7 +79,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 .df-notif-btn {
   display: flex; align-items: center; gap: 6px; background: transparent;
-  border: 1px solid #ffffff33; color: var(--white); border-radius: 8px;
+  border: 1px solid #ffffff33; color: #ffffff; border-radius: 8px;
   padding: 7px 12px; font-size: 12.5px; font-weight: 600; cursor: pointer;
 }
 .df-notif-btn.active { background: var(--blue); border-color: var(--blue); }
@@ -114,7 +114,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 textarea.df-input { font-family: inherit; }
 
 .df-btn-primary {
-  background: var(--blue); color: var(--white); border: none; border-radius: 8px;
+  background: var(--blue); color: #ffffff; border: none; border-radius: 8px;
   padding: 9px 16px; font-size: 13.5px; font-weight: 800; cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -142,13 +142,13 @@ textarea.df-input { font-family: inherit; }
 
 /* ---------- Hoje ---------- */
 .df-hero {
-  background: var(--blue-deep); color: var(--white); border-radius: 14px; padding: 18px;
+  background: var(--blue-deep); color: #ffffff; border-radius: 14px; padding: 18px;
   display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
 }
 .df-hero-label { margin: 0; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #cddcff; font-weight: 700; }
 .df-hero-title { margin: 4px 0 0; font-size: 19px; font-weight: 800; }
 .df-hero-time { margin: 2px 0 0; font-size: 13px; color: #cddcff; font-family: ui-monospace, monospace; }
-.df-hero-btn { background: var(--white); color: var(--blue-deep); border: none; border-radius: 8px; padding: 9px 16px; font-weight: 800; font-size: 13px; cursor: pointer; }
+.df-hero-btn { background: #ffffff; color: var(--blue-deep); border: none; border-radius: 8px; padding: 9px 16px; font-weight: 800; font-size: 13px; cursor: pointer; }
 
 .df-revisar { background: var(--white); border: 1.5px solid var(--blue); border-radius: 14px; padding: 16px; }
 .df-revisar-label { margin: 0 0 10px; font-size: 12.5px; font-weight: 800; color: var(--blue-deep); display: flex; align-items: center; gap: 6px; }
@@ -234,7 +234,7 @@ textarea.df-input { font-family: inherit; }
 /* ---------- Registro ---------- */
 .df-mic-btn {
   position: absolute; right: 10px; top: 10px; width: 32px; height: 32px; border-radius: 999px;
-  border: none; cursor: pointer; background: var(--blue); color: var(--white); display: grid; place-items: center;
+  border: none; cursor: pointer; background: var(--blue); color: #ffffff; display: grid; place-items: center;
 }
 .df-mic-btn.gravando { background: var(--red); }
 
@@ -259,7 +259,7 @@ textarea.df-input { font-family: inherit; }
 .df-ring-card { display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; min-width: 100px; }
 .df-ring-nome { font-size: 12px; font-weight: 700; text-align: center; }
 
-.df-info-box { background: var(--black); color: var(--white); border-radius: 14px; padding: 16px; }
+.df-info-box { background: var(--black); color: #ffffff; border-radius: 14px; padding: 16px; }
 .df-info-titulo { margin: 0 0 6px; font-size: 12.5px; font-weight: 800; color: var(--blue-bright); }
 .df-info-texto { margin: 0; font-size: 12.5px; color: #ffffffb0; line-height: 1.6; }
 
