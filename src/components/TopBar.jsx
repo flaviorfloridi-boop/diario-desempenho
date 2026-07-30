@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Flame, TrendingUp, Check, Bell, BellOff, Zap } from "lucide-react";
-import { todayISO, addDaysISO } from "../lib/dates";
+import { todayISO, addDaysISO, diaDaSemana } from "../lib/dates";
 
 export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
   const hoje = todayISO();
@@ -22,8 +22,9 @@ export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
   }, [dados.entries, hoje]);
 
   const habitosFeitosHoje = dados.habits.filter((h) => h.datas.includes(hoje)).length;
-  const tarefasHoje = dados.tasks.filter((t) => t.data === hoje);
-  const feitas = tarefasHoje.filter((t) => t.feita).length;
+  const diaSemanaHoje = diaDaSemana(hoje);
+  const tarefasHoje = dados.tasks.filter((t) => (!t.recorrente && t.data === hoje) || (t.recorrente && t.recorrente.includes(diaSemanaHoje) && t.data <= hoje));
+  const feitas = tarefasHoje.filter((t) => (t.recorrente ? (t.feitasEm || []).includes(hoje) : t.feita)).length;
 
   return (
     <div className="df-topbar">

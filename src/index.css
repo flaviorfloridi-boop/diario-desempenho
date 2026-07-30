@@ -8,8 +8,8 @@
   --blue-bright: #6d93ff;
   --blue-pale: #1b2b52;
   --line: #232838;
-  --ink: #eef1f8;
-  --ink-soft: #8b93a7;
+  --ink: #ffffff;
+  --ink-soft: #aeb7cc;
   --red: #ff6b5b;
   --green: #3ecf8e;
   --amber: #ffb454;
@@ -22,12 +22,26 @@
 
 html, body, #root { height: 100%; }
 
+html { scroll-behavior: smooth; }
+
 body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { touch-action: manipulation; }
+button:active { transform: scale(0.97); }
+
+/* Em telas de toque, :hover pode ficar "preso" depois de tocar — desliga esses efeitos ali */
+@media (hover: none) {
+  .df-card:hover, .df-tarefa-row:hover, .df-bloco-rico:hover, .df-area-row:hover,
+  .df-btn-primary:hover:not(:disabled), .df-btn-ghost:hover, .df-menu-trigger:hover {
+    box-shadow: inherit; transform: none; background: inherit; border-color: inherit;
+  }
 }
 
 ::selection { background: var(--blue-pale); }
@@ -50,7 +64,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.df-tab-content { animation: df-fade-in 0.28s ease both; }
+.df-tab-content { animation: df-fade-in 0.28s cubic-bezier(0.4, 0, 0.2, 1) both; }
 
 /* ---------- layout ---------- */
 .df-topbar { background: var(--black); color: var(--white); position: relative; }
@@ -87,7 +101,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .df-main { max-width: 960px; margin: 0 auto; padding: 24px 20px 90px; }
 
 /* ---------- componentes genéricos ---------- */
-.df-card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(59,107,245,0.02); transition: box-shadow 0.2s ease, transform 0.2s ease; }
+.df-card { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(59,107,245,0.02); transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 .df-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 0 1px rgba(59,107,245,0.12); }
 .df-empty { border: 1px dashed var(--line); border-radius: 14px; padding: 26px; text-align: center; color: var(--ink-soft); font-size: 13.5px; }
 
@@ -103,7 +117,7 @@ textarea.df-input { font-family: inherit; }
   background: var(--blue); color: var(--white); border: none; border-radius: 8px;
   padding: 9px 16px; font-size: 13.5px; font-weight: 800; cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .df-btn-primary:hover:not(:disabled) { background: var(--blue-deep); box-shadow: 0 4px 12px rgba(43,92,240,0.28); transform: translateY(-1px); }
 .df-btn-primary:active:not(:disabled) { transform: translateY(0); }
@@ -113,7 +127,7 @@ textarea.df-input { font-family: inherit; }
   background: none; color: var(--blue); border: 1px solid rgba(59,107,245,0.35); border-radius: 8px;
   padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
   display: inline-flex; align-items: center; gap: 6px;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .df-btn-ghost:hover { background: var(--blue-pale); border-color: var(--blue); }
 
@@ -140,7 +154,7 @@ textarea.df-input { font-family: inherit; }
 .df-revisar-label { margin: 0 0 10px; font-size: 12.5px; font-weight: 800; color: var(--blue-deep); display: flex; align-items: center; gap: 6px; }
 .df-pill { background: var(--blue-pale); color: var(--blue-deep); padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
 
-.df-tarefa-row { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; transition: box-shadow 0.15s ease; }
+.df-tarefa-row { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; transition: box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
 .df-tarefa-row:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 .df-tarefa-row.feita { opacity: 0.55; }
 .df-tarefa-hora { font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-soft); }
@@ -158,7 +172,7 @@ textarea.df-input { font-family: inherit; }
 
 /* Agenda "rica" (redesenho) */
 .df-timeline-rica { margin-top: 16px; }
-.df-timeline-row-rica { display: flex; border-top: 1px solid var(--line); min-height: 30px; transition: background 0.15s ease; }
+.df-timeline-row-rica { display: flex; border-top: 1px solid var(--line); min-height: 30px; transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
 .df-timeline-row-rica:first-child { border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; }
 .df-timeline-row-rica:last-child { border-radius: 0 0 14px 14px; }
 .df-timeline-row-rica.com-bloco { min-height: 60px; background: var(--white); }
@@ -173,7 +187,7 @@ textarea.df-input { font-family: inherit; }
 .df-bloco-rico {
   display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; margin: 6px 10px;
   border-radius: 10px; background: var(--white); border: 1px solid var(--line); border-left: 3px solid var(--blue);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.35); transition: box-shadow 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35); transition: box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .df-bloco-rico:hover { box-shadow: 0 8px 22px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,107,245,0.1); transform: translateY(-1px); }
 .df-bloco-rico.feita { opacity: 0.55; }
@@ -186,7 +200,7 @@ textarea.df-input { font-family: inherit; }
 .df-menu-trigger {
   width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper);
   color: var(--ink); display: grid; place-items: center; cursor: pointer; flex-shrink: 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .df-menu-trigger:hover { background: var(--blue-pale); border-color: var(--blue); color: var(--blue-deep); }
 
@@ -205,7 +219,7 @@ textarea.df-input { font-family: inherit; }
 .df-add-bloco-btn {
   width: 100%; margin-top: 14px; padding: 12px; border-radius: 12px; border: 1.5px dashed var(--line);
   background: none; color: var(--blue); font-size: 13.5px; font-weight: 700; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 6px; transition: border-color 0.15s ease, background 0.15s ease;
+  display: flex; align-items: center; justify-content: center; gap: 6px; transition: border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .df-add-bloco-btn:hover { border-color: var(--blue); background: var(--blue-pale); }
 
@@ -214,7 +228,7 @@ textarea.df-input { font-family: inherit; }
 .df-prioridade-opcao {
   display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px;
   border: 1.5px solid var(--line); font-size: 12px; font-weight: 700; cursor: pointer; background: var(--white);
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ---------- Registro ---------- */
@@ -236,7 +250,7 @@ textarea.df-input { font-family: inherit; }
 .df-sugestao { grid-column: 1 / -1; background: var(--blue-pale); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; color: var(--blue-deep); }
 
 /* ---------- Áreas ---------- */
-.df-area-row { display: flex; align-items: center; gap: 14px; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; transition: box-shadow 0.15s ease; }
+.df-area-row { display: flex; align-items: center; gap: 14px; background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; transition: box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
 .df-area-row:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 0 0 1px rgba(59,107,245,0.1); }
 .df-area-nome { margin: 0; font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 .df-area-meta { margin: 2px 0 0; font-size: 12px; color: var(--ink-soft); }

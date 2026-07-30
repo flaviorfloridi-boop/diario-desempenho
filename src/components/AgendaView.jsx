@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus, Send, Loader2, CheckCheck, Download, Clock, MoreHorizontal } from "lucide-react";
-import { todayISO, addDaysISO, fmtDiaSemana, fmtDataLonga, uid, googleCalendarLink, HORAS_DIA } from "../lib/dates";
+import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus, Send, Loader2, CheckCheck, Download, Clock, MoreHorizontal, Repeat } from "lucide-react";
+import { todayISO, addDaysISO, fmtDiaSemana, fmtDataLonga, uid, googleCalendarLink, HORAS_DIA, DIAS_SEMANA, diaDaSemana } from "../lib/dates";
 import { criarEvento } from "../lib/googleCalendar";
 import { baixarICS } from "../lib/ics";
 import { TipoBadge } from "./Shared";
@@ -11,25 +11,45 @@ const LABEL_PRIORIDADE = { alta: "Urgente + importante", media: "Importante", ba
 
 export function AgendaView({ dados, persist, selectedDate, setSelectedDate, googleConectado, conectarGoogle }) {
   const [novo, setNovo] = useState({ inicio: "09:00", fim: "10:00", titulo: "", prioridade: "media", tipo: "academico" });
+  const [repetir, setRepetir] = useState(false);
+  const [diasRepeticao, setDiasRepeticao] = useState([]);
   const [enviando, setEnviando] = useState(null);
   const [enviados, setEnviados] = useState({});
   const [menuAberto, setMenuAberto] = useState(null);
   const [formAberto, setFormAberto] = useState(false);
 
-  const tarefasDoDia = dados.tasks.filter((t) => t.data === selectedDate).sort((a, b) => a.inicio.localeCompare(b.inicio));
-  const feitas = tarefasDoDia.filter((t) => t.feita).length;
+  const diaSemanaAtual = diaDaSemana(selectedDate);
+  const tarefasUnicas = dados.tasks.filter((t) => !t.recorrente && t.data === selectedDate);
+  const tarefasRecorrentes = dados.tasks.filter((t) => t.recorrente && t.recorrente.includes(diaSemanaAtual) && t.data <= selectedDate);
+  const tarefasDoDia = [...tarefasUnicas, ...tarefasRecorrentes].sort((a, b) => a.inicio.localeCompare(b.inicio));
+
+  function feitaNoDay(t) {
+    return t.recorrente ? (t.feitasEm || []).includes(selectedDate) : t.feita;
+  }
+
+  const feitas = tarefasDoDia.filter(feitaNoDay).length;
   const isHoje = selectedDate === todayISO();
   const horaAtual = new Date().getHours();
 
   function addTarefa() {
     if (!novo.titulo.trim()) return;
-    const t = { id: uid(), data: selectedDate, ...novo, titulo: novo.titulo.trim(), feita: false };
+    if (repetir && diasRepeticao.length === 0) return;
+    const base = { id: uid(), data: selectedDate, ...novo, titulo: novo.titulo.trim() };
+    const t = repetir ? { ...base, recorrente: diasRepeticao, feitasEm: [] } : { ...base, feita: false };
     persist({ ...dados, tasks: [...dados.tasks, t] });
     setNovo({ ...novo, titulo: "" });
+    setRepetir(false);
+    setDiasRepeticao([]);
     setFormAberto(false);
   }
-  function toggleFeita(id) {
-    persist({ ...dados, tasks: dados.tasks.map((t) => (t.id === id ? { ...t, feita: !t.feita } : t)) });
+  function toggleFeita(t) {
+    if (t.recorrente) {
+      const feitasEm = t.feitasEm || [];
+      const proxima = feitasEm.includes(selectedDate) ? feitasEm.filter((d) => d !== selectedDate) : [...feitasEm, selectedDate];
+      persist({ ...dados, tasks: dados.tasks.map((x) => (x.id === t.id ? { ...x, feitasEm: proxima } : x)) });
+    } else {
+      persist({ ...dados, tasks: dados.tasks.map((x) => (x.id === t.id ? { ...x, feita: !x.feita } : x)) });
+    }
   }
   function remover(id) {
     persist({ ...dados, tasks: dados.tasks.filter((t) => t.id !== id) });
@@ -81,19 +101,26 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                 {hh}
               </div>
               <div className="df-timeline-conteudo">
-                {nesta.map((t) => (
+                {nesta.map((t) => {
+                  const feitaHoje = feitaNoDay(t);
+                  return (
                   <div
                     key={t.id}
-                    className={`df-bloco-rico ${t.feita ? "feita" : ""}`}
+                    className={`df-bloco-rico ${feitaHoje ? "feita" : ""}`}
                     style={{ borderLeftColor: COR_TIPO[t.tipo] || COR_TIPO.geral }}
                   >
-                    <button className="df-icon-btn" onClick={() => toggleFeita(t.id)} style={{ flexShrink: 0 }}>
-                      {t.feita ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--line)" />}
+                    <button className="df-icon-btn" onClick={() => toggleFeita(t)} style={{ flexShrink: 0 }}>
+                      {feitaHoje ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--line)" />}
                     </button>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <span className={`df-tarefa-titulo-rico ${t.feita ? "feita" : ""}`}>{t.titulo}</span>
+                        <span className={`df-tarefa-titulo-rico ${feitaHoje ? "feita" : ""}`}>{t.titulo}</span>
+                        {t.recorrente && (
+                          <span className="df-prioridade-chip" style={{ color: "var(--blue-bright)" }} title={`Repete: ${t.recorrente.map((d) => DIAS_SEMANA[d]).join(", ")}`}>
+                            <Repeat size={11} />
+                          </span>
+                        )}
                         <span className="df-prioridade-chip" style={{ color: COR_PRIORIDADE[t.prioridade] }}>
                           <span className="df-prioridade-dot" style={{ background: COR_PRIORIDADE[t.prioridade] }} />
                           {t.prioridade === "alta" ? "Urgente" : t.prioridade === "media" ? "Importante" : "Se sobrar"}
@@ -128,7 +155,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                                 </a>
                               )}
                               <button className="df-menu-item destrutivo" onClick={() => remover(t.id)}>
-                                <Trash2 size={14} /> Remover
+                                <Trash2 size={14} /> {t.recorrente ? "Remover série" : "Remover"}
                               </button>
                             </div>
                           </>
@@ -136,7 +163,8 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           );
@@ -202,6 +230,32 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
             </div>
           </div>
 
+          <div style={{ marginBottom: 14 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, fontWeight: 700, cursor: "pointer", marginBottom: repetir ? 8 : 0 }}>
+              <input type="checkbox" checked={repetir} onChange={(e) => { setRepetir(e.target.checked); if (e.target.checked && diasRepeticao.length === 0) setDiasRepeticao([diaDaSemana(selectedDate)]); }} />
+              <Repeat size={13} color="var(--blue-bright)" /> Repetir toda semana
+            </label>
+            {repetir && (
+              <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+                {DIAS_SEMANA.map((label, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setDiasRepeticao((prev) => (prev.includes(idx) ? prev.filter((d) => d !== idx) : [...prev, idx]))}
+                    style={{
+                      width: 36, height: 36, borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer",
+                      border: diasRepeticao.includes(idx) ? "1.5px solid var(--blue)" : "1.5px solid var(--line)",
+                      background: diasRepeticao.includes(idx) ? "var(--blue-pale)" : "var(--white)",
+                      color: diasRepeticao.includes(idx) ? "var(--blue-bright)" : "var(--ink-soft)",
+                    }}
+                  >
+                    {label[0]}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <button onClick={addTarefa} className="df-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
             <Plus size={15} /> Adicionar à agenda
           </button>
@@ -209,7 +263,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
       )}
 
       <p style={{ margin: "12px 0 0", fontSize: 11.5, color: "var(--ink-soft)", textAlign: "center" }}>
-        O ícone <Download size={12} style={{ verticalAlign: -2 }} /> baixa um .ics (abre no Apple Calendar, Outlook…). O <MoreHorizontal size={12} style={{ verticalAlign: -2 }} /> tem mais opções (Google Calendar, remover).
+        O ícone <Download size={12} style={{ verticalAlign: -2 }} /> baixa um .ics (abre no Apple Calendar, Outlook…). O <MoreHorizontal size={12} style={{ verticalAlign: -2 }} /> tem mais opções (Google Calendar, remover). O <Repeat size={12} style={{ verticalAlign: -2 }} /> mostra tarefas que se repetem toda semana.
       </p>
     </div>
   );

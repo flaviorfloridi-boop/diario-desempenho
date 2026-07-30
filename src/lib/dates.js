@@ -36,3 +36,8 @@ export function googleCalendarLink(task, dataISO) {
 
 export const REVIEW_INTERVALS = [1, 3, 7, 16, 35, 90];
 export const HORAS_DIA = Array.from({ length: 16 }, (_, i) => i + 6); // 06h-21h
+export const DIAS_SEMANA = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+export function diaDaSemana(iso) {
+  return new Date(iso + "T00:00:00").getDay();
+}

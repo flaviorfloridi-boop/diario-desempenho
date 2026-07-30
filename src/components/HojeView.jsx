@@ -1,17 +1,31 @@
-import { Check, Circle, Sparkles, Flame, Target } from "lucide-react";
-import { todayISO } from "../lib/dates";
+import { Check, Circle, Sparkles, Flame, Target, Repeat } from "lucide-react";
+import { todayISO, diaDaSemana } from "../lib/dates";
 import { TipoBadge, EmptyState } from "./Shared";
 
 export function HojeView({ dados, persist }) {
   const hoje = todayISO();
-  const tarefas = dados.tasks.filter((t) => t.data === hoje).sort((a, b) => a.inicio.localeCompare(b.inicio));
+  const diaSemanaHoje = diaDaSemana(hoje);
+  const tarefasUnicas = dados.tasks.filter((t) => !t.recorrente && t.data === hoje);
+  const tarefasRecorrentes = dados.tasks.filter((t) => t.recorrente && t.recorrente.includes(diaSemanaHoje) && t.data <= hoje);
+  const tarefas = [...tarefasUnicas, ...tarefasRecorrentes].sort((a, b) => a.inicio.localeCompare(b.inicio));
+
+  function feitaNoDay(t) {
+    return t.recorrente ? (t.feitasEm || []).includes(hoje) : t.feita;
+  }
+
   const paraRevisar = dados.areas.filter((a) => a.nextReview && a.nextReview <= hoje);
-  const proxima = tarefas.find((t) => !t.feita);
+  const proxima = tarefas.find((t) => !feitaNoDay(t));
   const habitosPendentes = dados.habits.filter((h) => !h.datas.includes(hoje));
   const metasAtivas = dados.goals.slice(0, 3);
 
-  function toggleFeita(id) {
-    persist({ ...dados, tasks: dados.tasks.map((t) => (t.id === id ? { ...t, feita: !t.feita } : t)) });
+  function toggleFeita(t) {
+    if (t.recorrente) {
+      const feitasEm = t.feitasEm || [];
+      const proxima = feitasEm.includes(hoje) ? feitasEm.filter((d) => d !== hoje) : [...feitasEm, hoje];
+      persist({ ...dados, tasks: dados.tasks.map((x) => (x.id === t.id ? { ...x, feitasEm: proxima } : x)) });
+    } else {
+      persist({ ...dados, tasks: dados.tasks.map((x) => (x.id === t.id ? { ...x, feita: !x.feita } : x)) });
+    }
   }
   function toggleHabito(id) {
     persist({
@@ -33,7 +47,7 @@ export function HojeView({ dados, persist }) {
             <p className="df-hero-title">{proxima.titulo}</p>
             <p className="df-hero-time">{proxima.inicio} – {proxima.fim}</p>
           </div>
-          <button className="df-hero-btn" onClick={() => toggleFeita(proxima.id)}>Marcar como feito</button>
+          <button className="df-hero-btn" onClick={() => toggleFeita(proxima)}>Marcar como feito</button>
         </div>
       )}
 
@@ -74,16 +88,20 @@ export function HojeView({ dados, persist }) {
         <p className="df-section-label">Tarefas de hoje ({tarefas.length})</p>
         {tarefas.length === 0 && <EmptyState texto="Nada agendado pra hoje. Vá na aba Agenda pra planejar o dia." />}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {tarefas.map((t) => (
-            <div key={t.id} className={`df-tarefa-row ${t.feita ? "feita" : ""}`}>
-              <button className="df-icon-btn" onClick={() => toggleFeita(t.id)}>
-                {t.feita ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--ink-soft)" />}
-              </button>
-              <span className="df-tarefa-hora">{t.inicio}</span>
-              <span className={`df-tarefa-titulo ${t.feita ? "feita" : ""}`}>{t.titulo}</span>
-              <TipoBadge tipo={t.tipo} />
-            </div>
-          ))}
+          {tarefas.map((t) => {
+            const feita = feitaNoDay(t);
+            return (
+              <div key={t.id} className={`df-tarefa-row ${feita ? "feita" : ""}`}>
+                <button className="df-icon-btn" onClick={() => toggleFeita(t)}>
+                  {feita ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--ink-soft)" />}
+                </button>
+                <span className="df-tarefa-hora">{t.inicio}</span>
+                <span className={`df-tarefa-titulo ${feita ? "feita" : ""}`}>{t.titulo}</span>
+                {t.recorrente && <Repeat size={12} color="var(--blue-bright)" />}
+                <TipoBadge tipo={t.tipo} />
+              </div>
+            );
+          })}
         </div>
       </div>
 
