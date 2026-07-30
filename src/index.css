@@ -155,6 +155,60 @@ textarea.df-input { font-family: inherit; }
 .df-bloco { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 8px; background: var(--blue-pale); }
 .df-bloco.feita { background: #f0f1f5; opacity: 0.6; }
 
+/* Agenda "rica" (redesenho) */
+.df-timeline-rica { margin-top: 16px; }
+.df-timeline-row-rica { display: flex; border-top: 1px solid var(--line); min-height: 30px; transition: background 0.15s ease; }
+.df-timeline-row-rica:first-child { border-top: 1px solid var(--line); border-radius: 14px 14px 0 0; }
+.df-timeline-row-rica:last-child { border-radius: 0 0 14px 14px; }
+.df-timeline-row-rica.com-bloco { min-height: 60px; background: var(--white); }
+.df-timeline-row-rica:not(.com-bloco) { background: repeating-linear-gradient(135deg, #fff, #fff 8px, #fafbfd 8px, #fafbfd 16px); }
+.df-timeline-row-rica.agora { background: var(--blue-pale) !important; }
+.df-timeline-hora-rica {
+  width: 60px; flex-shrink: 0; padding: 8px 10px; font-family: ui-monospace, monospace; font-size: 11px;
+  color: var(--ink-soft); border-right: 1px solid var(--line); display: flex; align-items: center; gap: 5px;
+}
+.df-agora-dot { width: 6px; height: 6px; border-radius: 99px; background: var(--blue); flex-shrink: 0; box-shadow: 0 0 0 3px var(--blue-pale); }
+
+.df-bloco-rico {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; margin: 6px 10px;
+  border-radius: 10px; background: var(--white); border: 1px solid var(--line); border-left: 3px solid var(--blue);
+  box-shadow: 0 1px 3px rgba(11,14,20,0.05); transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.df-bloco-rico:hover { box-shadow: 0 5px 16px rgba(11,14,20,0.09); transform: translateY(-1px); }
+.df-bloco-rico.feita { opacity: 0.55; }
+.df-tarefa-titulo-rico { font-size: 14px; font-weight: 700; }
+.df-tarefa-titulo-rico.feita { text-decoration: line-through; }
+.df-tarefa-hora-rica { font-size: 11.5px; color: var(--ink-soft); font-family: ui-monospace, monospace; }
+.df-prioridade-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; }
+.df-prioridade-dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; }
+
+.df-menu-flutuante {
+  position: absolute; right: 0; top: 26px; z-index: 20; background: var(--white); border: 1px solid var(--line);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(11,14,20,0.14); padding: 6px; min-width: 220px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.df-menu-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 7px; border: none; background: none;
+  font-size: 12.5px; font-weight: 600; color: var(--ink); cursor: pointer; text-align: left; text-decoration: none;
+}
+.df-menu-item:hover { background: var(--paper); }
+.df-menu-item.destrutivo { color: var(--red); }
+
+.df-add-bloco-btn {
+  width: 100%; margin-top: 14px; padding: 12px; border-radius: 12px; border: 1.5px dashed var(--line);
+  background: none; color: var(--blue); font-size: 13.5px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px; transition: border-color 0.15s ease, background 0.15s ease;
+}
+.df-add-bloco-btn:hover { border-color: var(--blue); background: var(--blue-pale); }
+
+.df-mini-label { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--ink-soft); font-weight: 700; }
+
+.df-prioridade-opcao {
+  display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px;
+  border: 1.5px solid var(--line); font-size: 12px; font-weight: 700; cursor: pointer; background: #fff;
+  transition: all 0.15s ease;
+}
+
 /* ---------- Registro ---------- */
 .df-mic-btn {
   position: absolute; right: 10px; top: 10px; width: 32px; height: 32px; border-radius: 999px;
