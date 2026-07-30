@@ -1,4 +1,4 @@
-import { Check, Circle, Sparkles } from "lucide-react";
+import { Check, Circle, Sparkles, Flame, Target } from "lucide-react";
 import { todayISO } from "../lib/dates";
 import { TipoBadge, EmptyState } from "./Shared";
 
@@ -7,9 +7,21 @@ export function HojeView({ dados, persist }) {
   const tarefas = dados.tasks.filter((t) => t.data === hoje).sort((a, b) => a.inicio.localeCompare(b.inicio));
   const paraRevisar = dados.areas.filter((a) => a.nextReview && a.nextReview <= hoje);
   const proxima = tarefas.find((t) => !t.feita);
+  const habitosPendentes = dados.habits.filter((h) => !h.datas.includes(hoje));
+  const metasAtivas = dados.goals.slice(0, 3);
 
   function toggleFeita(id) {
     persist({ ...dados, tasks: dados.tasks.map((t) => (t.id === id ? { ...t, feita: !t.feita } : t)) });
+  }
+  function toggleHabito(id) {
+    persist({
+      ...dados,
+      habits: dados.habits.map((h) => {
+        if (h.id !== id) return h;
+        const tem = h.datas.includes(hoje);
+        return { ...h, datas: tem ? h.datas.filter((d) => d !== hoje) : [...h.datas, hoje] };
+      }),
+    });
   }
 
   return (
@@ -34,6 +46,30 @@ export function HojeView({ dados, persist }) {
         </div>
       )}
 
+      {dados.habits.length > 0 && (
+        <div>
+          <p className="df-section-label">Hábitos de hoje</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {dados.habits.map((h) => {
+              const feito = h.datas.includes(hoje);
+              return (
+                <button
+                  key={h.id}
+                  onClick={() => toggleHabito(h.id)}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                    background: feito ? "#2b5cf0" : "#fff", color: feito ? "#fff" : "#0b0e14", border: feito ? "none" : "1px solid #e1e5f0",
+                  }}
+                >
+                  {feito ? <Check size={12} /> : <Flame size={12} color="#c0392b" />} {h.nome}
+                </button>
+              );
+            })}
+          </div>
+          {habitosPendentes.length === 0 && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#1c7a4d", fontWeight: 700 }}>✓ Todos os hábitos de hoje concluídos!</p>}
+        </div>
+      )}
+
       <div>
         <p className="df-section-label">Tarefas de hoje ({tarefas.length})</p>
         {tarefas.length === 0 && <EmptyState texto="Nada agendado pra hoje. Vá na aba Agenda pra planejar o dia." />}
@@ -50,6 +86,26 @@ export function HojeView({ dados, persist }) {
           ))}
         </div>
       </div>
+
+      {metasAtivas.length > 0 && (
+        <div>
+          <p className="df-section-label">Metas em andamento</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {metasAtivas.map((m) => {
+              const total = m.checklist.length;
+              const feitos = m.checklist.filter((i) => i.feito).length;
+              const pct = total > 0 ? Math.round((feitos / total) * 100) : 0;
+              return (
+                <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", border: "1px solid #e1e5f0", borderRadius: 10, padding: "9px 12px" }}>
+                  <Target size={14} color="#2b5cf0" style={{ flexShrink: 0 }} />
+                  <span style={{ flex: 1, fontSize: 13 }}>{m.titulo}</span>
+                  {total > 0 && <span style={{ fontSize: 11.5, color: "#5b6272", fontWeight: 700 }}>{pct}%</span>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

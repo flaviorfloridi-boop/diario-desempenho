@@ -1,10 +1,14 @@
-import { LayoutDashboard, CalendarDays, NotebookPen, BookOpen, TrendingUp, Settings } from "lucide-react";
+import { LayoutDashboard, CalendarDays, NotebookPen, BookOpen, TrendingUp, Settings, Flame, Heart, Target, Kanban } from "lucide-react";
 
 const TABS = [
   { id: "hoje", label: "Hoje", icon: LayoutDashboard },
   { id: "agenda", label: "Agenda", icon: CalendarDays },
+  { id: "tarefas", label: "Tarefas", icon: Kanban },
   { id: "registro", label: "Registro", icon: NotebookPen },
   { id: "areas", label: "Áreas", icon: BookOpen },
+  { id: "habitos", label: "Hábitos", icon: Flame },
+  { id: "diario", label: "Diário", icon: Heart },
+  { id: "metas", label: "Metas", icon: Target },
   { id: "painel", label: "Painel", icon: TrendingUp },
   { id: "config", label: "Configurações", icon: Settings },
 ];

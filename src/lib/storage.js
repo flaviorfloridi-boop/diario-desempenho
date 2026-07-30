@@ -1,12 +1,12 @@
 const DATA_KEY = "diario-desempenho:dados";
 const CONFIG_KEY = "diario-desempenho:config";
 
-const VAZIO = { tasks: [], areas: [], entries: [], reflexoes: {} };
+const VAZIO = { tasks: [], areas: [], entries: [], reflexoes: {}, habits: [], journal: [], goals: [], kanban: [] };
 
 export function carregarDados() {
   try {
     const raw = localStorage.getItem(DATA_KEY);
-    return raw ? JSON.parse(raw) : structuredClone(VAZIO);
+    return raw ? { ...structuredClone(VAZIO), ...JSON.parse(raw) } : structuredClone(VAZIO);
   } catch {
     return structuredClone(VAZIO);
   }

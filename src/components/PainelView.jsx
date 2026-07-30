@@ -1,8 +1,19 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend, LineChart, Line } from "recharts";
+import { Flame } from "lucide-react";
 import { todayISO, addDaysISO } from "../lib/dates";
 import { GrowthRing } from "./GrowthRing";
 import { EmptyState } from "./Shared";
+
+const HUMOR_EMOJI = { 1: "😞", 2: "😕", 3: "😐", 4: "🙂", 5: "😄" };
+
+function calcularStreak(datas, hoje) {
+  const set = new Set(datas);
+  let count = 0;
+  let d = hoje;
+  while (set.has(d)) { count++; d = addDaysISO(d, -1); }
+  return count;
+}
 
 export function PainelView({ dados }) {
   const hoje = todayISO();
@@ -17,6 +28,17 @@ export function PainelView({ dados }) {
       return { dia: new Date(d + "T00:00:00").toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", ""), academico, esporte, bemestar };
     });
   }, [dados.entries, dados.areas, hoje]);
+
+  const humorSemana = useMemo(() => {
+    const dias = Array.from({ length: 7 }, (_, i) => addDaysISO(hoje, -6 + i));
+    return dias.map((d) => {
+      const j = dados.journal.find((x) => x.data === d);
+      return { dia: new Date(d + "T00:00:00").toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", ""), humor: j?.humor ?? null };
+    });
+  }, [dados.journal, hoje]);
+  const temHumor = humorSemana.some((h) => h.humor != null);
+
+  const habitosOrdenados = [...dados.habits].map((h) => ({ ...h, streak: calcularStreak(h.datas, hoje) })).sort((a, b) => b.streak - a.streak);
 
   return (
     <div>
@@ -37,6 +59,38 @@ export function PainelView({ dados }) {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {temHumor && (
+        <div className="df-card" style={{ marginBottom: 20 }}>
+          <p className="df-section-label">Humor — últimos 7 dias</p>
+          <div style={{ width: "100%", height: 140 }}>
+            <ResponsiveContainer>
+              <LineChart data={humorSemana} margin={{ left: -20, top: 10 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e1e5f0" vertical={false} />
+                <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "#5b6272" }} axisLine={false} tickLine={false} />
+                <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tickFormatter={(v) => HUMOR_EMOJI[v]} tick={{ fontSize: 13 }} axisLine={false} tickLine={false} width={28} />
+                <Tooltip formatter={(v) => [HUMOR_EMOJI[v] || "—", "Humor"]} contentStyle={{ borderRadius: 8, border: "1px solid #e1e5f0", fontSize: 13 }} />
+                <Line type="monotone" dataKey="humor" stroke="#2b5cf0" strokeWidth={2.5} dot={{ r: 4, fill: "#2b5cf0" }} connectNulls />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {habitosOrdenados.length > 0 && (
+        <div className="df-card" style={{ marginBottom: 20 }}>
+          <p className="df-section-label">Sequência de hábitos</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {habitosOrdenados.map((h) => (
+              <div key={h.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ flex: 1, fontSize: 13 }}>{h.nome}</span>
+                <Flame size={13} color={h.streak > 0 ? "#c0392b" : "#c7ccd6"} />
+                <span style={{ fontSize: 12.5, fontWeight: 700, minWidth: 60, textAlign: "right" }}>{h.streak} dia{h.streak !== 1 ? "s" : ""}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <p className="df-section-label">Nível por área</p>
       {dados.areas.length === 0 ? <EmptyState texto="Cadastre áreas pra ver o panorama aqui." /> : (

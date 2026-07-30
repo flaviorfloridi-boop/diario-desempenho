@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Flame, TrendingUp, Check, Bell, BellOff } from "lucide-react";
+import { Flame, TrendingUp, Check, Bell, BellOff, Zap } from "lucide-react";
 import { todayISO, addDaysISO } from "../lib/dates";
 
 export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
@@ -21,6 +21,7 @@ export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
     return dados.entries.filter((e) => dias.includes(e.data)).reduce((s, e) => s + e.minutos, 0);
   }, [dados.entries, hoje]);
 
+  const habitosFeitosHoje = dados.habits.filter((h) => h.datas.includes(hoje)).length;
   const tarefasHoje = dados.tasks.filter((t) => t.data === hoje);
   const feitas = tarefasHoje.filter((t) => t.feita).length;
 
@@ -30,7 +31,7 @@ export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
         <div className="df-topbar-row">
           <div>
             <p className="df-eyebrow">Diário de desempenho</p>
-            <h1 className="df-title">Acadêmico &amp; Esportes</h1>
+            <h1 className="df-title">LifeOS Pessoal</h1>
           </div>
           <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} onClick={ativarNotificacoes}>
             {notifAtivas ? <Bell size={14} /> : <BellOff size={14} />}
@@ -42,6 +43,7 @@ export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
           <Placar icon={Flame} valor={streak} label={streak === 1 ? "dia seguido" : "dias seguidos"} />
           <Placar icon={TrendingUp} valor={`${Math.round((minutosSemana / 60) * 10) / 10}h`} label="essa semana" />
           <Placar icon={Check} valor={`${feitas}/${tarefasHoje.length}`} label="tarefas hoje" />
+          {dados.habits.length > 0 && <Placar icon={Zap} valor={`${habitosFeitosHoje}/${dados.habits.length}`} label="hábitos hoje" />}
         </div>
       </div>
     </div>
