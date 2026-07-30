@@ -106,6 +106,7 @@ textarea.df-input { font-family: inherit; }
 .df-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
 .df-badge-academico { background: var(--blue-pale); color: var(--blue-deep); }
 .df-badge-esporte { background: #0b0e1412; color: var(--black); }
+.df-badge-bemestar { background: #e8f7f0; color: #0f6b47; }
 .df-badge-geral { background: #f0f1f5; color: var(--ink-soft); }
 
 /* ---------- Hoje ---------- */

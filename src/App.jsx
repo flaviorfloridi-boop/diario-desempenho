@@ -2,6 +2,7 @@ import { useState, useCallback, Suspense, lazy } from "react";
 import { carregarDados, salvarDados, carregarConfig, salvarConfig } from "./lib/storage";
 import { todayISO } from "./lib/dates";
 import { useNotificacoes } from "./hooks/useNotificacoes";
+import * as googleCalendar from "./lib/googleCalendar";
 import { TopBar } from "./components/TopBar";
 import { NavTabs } from "./components/NavTabs";
 import { HojeView } from "./components/HojeView";
@@ -18,6 +19,8 @@ export default function App() {
   const [config, setConfig] = useState(() => carregarConfig());
   const [selectedDate, setSelectedDate] = useState(todayISO());
   const [saveError, setSaveError] = useState(false);
+  const [googleConectado, setGoogleConectado] = useState(false);
+  const [googleErro, setGoogleErro] = useState("");
 
   const { ativas: notifAtivas, ativar: ativarNotificacoes } = useNotificacoes(dados);
 
@@ -31,10 +34,26 @@ export default function App() {
     setDados(carregarDados());
   }
 
-  function salvarApiKey(chave) {
-    const proximaConfig = { ...config, anthropicApiKey: chave };
+  function salvarGoogleClientId(clientId) {
+    const proximaConfig = { ...config, googleClientId: clientId };
     setConfig(proximaConfig);
     salvarConfig(proximaConfig);
+  }
+
+  async function conectarGoogle() {
+    setGoogleErro("");
+    try {
+      await googleCalendar.conectar(config.googleClientId);
+      setGoogleConectado(true);
+    } catch (e) {
+      setGoogleErro(e.message || "Não consegui conectar ao Google Calendar.");
+      setGoogleConectado(false);
+    }
+  }
+
+  function desconectarGoogle() {
+    googleCalendar.desconectar();
+    setGoogleConectado(false);
   }
 
   return (
@@ -49,8 +68,17 @@ export default function App() {
           </p>
         )}
         {tab === "hoje" && <HojeView dados={dados} persist={persist} />}
-        {tab === "agenda" && <AgendaView dados={dados} persist={persist} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />}
-        {tab === "registro" && <RegistroView dados={dados} persist={persist} apiKey={config.anthropicApiKey} />}
+        {tab === "agenda" && (
+          <AgendaView
+            dados={dados}
+            persist={persist}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            googleConectado={googleConectado}
+            conectarGoogle={conectarGoogle}
+          />
+        )}
+        {tab === "registro" && <RegistroView dados={dados} persist={persist} />}
         {tab === "areas" && <AreasView dados={dados} persist={persist} />}
         {tab === "painel" && (
           <Suspense fallback={<p style={{ fontSize: 13.5, color: "#5b6272" }}>Carregando painel…</p>}>
@@ -60,7 +88,11 @@ export default function App() {
         {tab === "config" && (
           <ConfiguracoesView
             config={config}
-            salvarApiKey={salvarApiKey}
+            salvarGoogleClientId={salvarGoogleClientId}
+            googleConectado={googleConectado}
+            googleErro={googleErro}
+            conectarGoogle={conectarGoogle}
+            desconectarGoogle={desconectarGoogle}
             notifAtivas={notifAtivas}
             ativarNotificacoes={ativarNotificacoes}
             recarregarDados={recarregarDados}

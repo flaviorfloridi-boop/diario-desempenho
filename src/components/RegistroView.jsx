@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Mic, Square, Sparkles, Loader2, ThumbsUp, Lightbulb } from "lucide-react";
+import { Mic, Square, ThumbsUp, Lightbulb, Target, Save } from "lucide-react";
 import { todayISO, addDaysISO, fmtDataCurta, uid, REVIEW_INTERVALS } from "../lib/dates";
-import { pedirFeedbackIA, ApiKeyAusenteError } from "../lib/ai";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { GrowthRing } from "./GrowthRing";
 import { EmptyState } from "./Shared";
 
-export function RegistroView({ dados, persist, apiKey }) {
+export function RegistroView({ dados, persist }) {
   const [areaId, setAreaId] = useState(dados.areas[0]?.id ?? "");
   const [texto, setTexto] = useState("");
   const [minutos, setMinutos] = useState(30);
   const [mastery, setMastery] = useState(0);
-  const [carregando, setCarregando] = useState(false);
-  const [erro, setErro] = useState("");
+  const [bom, setBom] = useState("");
+  const [melhorar, setMelhorar] = useState("");
+  const [proximoPasso, setProximoPasso] = useState("");
   const { suportado, gravando, iniciar, parar } = useSpeechToText();
 
   const area = dados.areas.find((a) => a.id === areaId);
@@ -23,31 +23,25 @@ export function RegistroView({ dados, persist, apiKey }) {
     iniciar((t) => setTexto((prev) => (prev ? prev + " " : "") + t));
   }
 
-  async function salvar() {
+  function salvar() {
     if (!area || !texto.trim()) return;
-    setCarregando(true);
-    setErro("");
-    let feedback = null;
-    try {
-      feedback = await pedirFeedbackIA({ apiKey, areaNome: area.nome, areaTipo: area.tipo, texto });
-    } catch (e) {
-      setErro(e instanceof ApiKeyAusenteError ? e.message : "Não consegui gerar o feedback agora, mas seu registro foi salvo.");
-    }
     const hoje = todayISO();
     const reviewCount = Math.min((area.reviewCount ?? 0) + 1, REVIEW_INTERVALS.length - 1);
     const nextReview = addDaysISO(hoje, REVIEW_INTERVALS[reviewCount]);
-    const entrada = { id: uid(), areaId, data: hoje, minutos, texto, mastery, feedback };
+    const avaliacao = (bom.trim() || melhorar.trim() || proximoPasso.trim())
+      ? { pontos_fortes: bom.trim() ? [bom.trim()] : [], pontos_melhorar: melhorar.trim() ? [melhorar.trim()] : [], sugestao_proxima_sessao: proximoPasso.trim() }
+      : null;
+    const entrada = { id: uid(), areaId, data: hoje, minutos, texto, mastery, feedback: avaliacao };
     persist({
       ...dados,
       entries: [...dados.entries, entrada],
       areas: dados.areas.map((a) => (a.id === areaId ? { ...a, mastery, reviewCount, lastActivity: hoje, nextReview } : a)),
     });
-    setTexto("");
-    setCarregando(false);
+    setTexto(""); setBom(""); setMelhorar(""); setProximoPasso("");
   }
 
   if (dados.areas.length === 0) {
-    return <EmptyState texto="Cadastre uma área (matéria ou esporte) na aba Áreas antes de registrar algo." />;
+    return <EmptyState texto="Cadastre uma área (escola, treino, terapia…) na aba Áreas antes de registrar algo." />;
   }
 
   return (
@@ -68,13 +62,14 @@ export function RegistroView({ dados, persist, apiKey }) {
           </label>
         </div>
 
+        <p className="df-section-label" style={{ marginBottom: 6 }}>O que rolou?</p>
         <div style={{ position: "relative" }}>
           <textarea
             className="df-input"
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
-            placeholder={`O que aconteceu ${area?.tipo === "esporte" ? "no treino" : "no estudo"}? Fale por voz ou digite aqui…`}
-            style={{ width: "100%", minHeight: 110, resize: "vertical", paddingRight: 46 }}
+            placeholder="Fale por voz ou digite o que aconteceu…"
+            style={{ width: "100%", minHeight: 90, resize: "vertical", paddingRight: 46 }}
           />
           {suportado && (
             <button className={`df-mic-btn ${gravando ? "gravando" : ""}`} onClick={toggleGravacao} title={gravando ? "Parar gravação" : "Falar"}>
@@ -84,11 +79,25 @@ export function RegistroView({ dados, persist, apiKey }) {
         </div>
         {!suportado && <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#5b6272" }}>Seu navegador não suporta ditado por voz aqui — pode digitar normalmente.</p>}
 
-        <button className="df-btn-primary" onClick={salvar} disabled={!texto.trim() || carregando} style={{ marginTop: 12 }}>
-          {carregando ? <Loader2 size={15} className="df-spin" /> : <Sparkles size={15} />}
-          {carregando ? "Analisando…" : "Salvar e pedir feedback da IA"}
+        <p className="df-section-label" style={{ margin: "16px 0 6px" }}>Sua autoavaliação (opcional, mas ajuda muito)</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
+            <ThumbsUp size={13} color="#1c7a4d" style={{ flexShrink: 0 }} />
+            <input className="df-input" placeholder="O que foi bom hoje?" value={bom} onChange={(e) => setBom(e.target.value)} style={{ flex: 1 }} />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
+            <Lightbulb size={13} color="#a8460f" style={{ flexShrink: 0 }} />
+            <input className="df-input" placeholder="O que dá pra melhorar?" value={melhorar} onChange={(e) => setMelhorar(e.target.value)} style={{ flex: 1 }} />
+          </label>
+          <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
+            <Target size={13} color="#2b5cf0" style={{ flexShrink: 0 }} />
+            <input className="df-input" placeholder="Próximo passo pra próxima vez" value={proximoPasso} onChange={(e) => setProximoPasso(e.target.value)} style={{ flex: 1 }} />
+          </label>
+        </div>
+
+        <button className="df-btn-primary" onClick={salvar} disabled={!texto.trim()} style={{ marginTop: 14 }}>
+          <Save size={15} /> Salvar registro
         </button>
-        {erro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#c0392b" }}>{erro}</p>}
       </div>
 
       <div>
@@ -112,15 +121,19 @@ function EntradaCard({ entrada }) {
       <p className="df-entrada-texto">{entrada.texto}</p>
       {entrada.feedback && (
         <div className="df-feedback-grid">
-          <div>
-            <p className="df-feedback-titulo bom"><ThumbsUp size={12} /> BOM</p>
-            <ul className="df-feedback-lista">{entrada.feedback.pontos_fortes?.map((p, i) => <li key={i}>{p}</li>)}</ul>
-          </div>
-          <div>
-            <p className="df-feedback-titulo melhorar"><Lightbulb size={12} /> MELHORAR</p>
-            <ul className="df-feedback-lista">{entrada.feedback.pontos_melhorar?.map((p, i) => <li key={i}>{p}</li>)}</ul>
-          </div>
-          {entrada.feedback.sugestao_proxima_sessao && <div className="df-sugestao">💡 {entrada.feedback.sugestao_proxima_sessao}</div>}
+          {entrada.feedback.pontos_fortes?.length > 0 && (
+            <div>
+              <p className="df-feedback-titulo bom"><ThumbsUp size={12} /> BOM</p>
+              <ul className="df-feedback-lista">{entrada.feedback.pontos_fortes.map((p, i) => <li key={i}>{p}</li>)}</ul>
+            </div>
+          )}
+          {entrada.feedback.pontos_melhorar?.length > 0 && (
+            <div>
+              <p className="df-feedback-titulo melhorar"><Lightbulb size={12} /> MELHORAR</p>
+              <ul className="df-feedback-lista">{entrada.feedback.pontos_melhorar.map((p, i) => <li key={i}>{p}</li>)}</ul>
+            </div>
+          )}
+          {entrada.feedback.sugestao_proxima_sessao && <div className="df-sugestao">🎯 {entrada.feedback.sugestao_proxima_sessao}</div>}
         </div>
       )}
     </div>

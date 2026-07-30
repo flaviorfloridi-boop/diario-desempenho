@@ -1,9 +1,10 @@
-import { BookOpen, Dumbbell, Circle } from "lucide-react";
+import { BookOpen, Dumbbell, HeartPulse, Circle } from "lucide-react";
 
 export function TipoBadge({ tipo }) {
   const map = {
-    academico: { label: "Acadêmico", cls: "df-badge-academico", icon: BookOpen },
-    esporte: { label: "Esporte", cls: "df-badge-esporte", icon: Dumbbell },
+    academico: { label: "Escola/TI", cls: "df-badge-academico", icon: BookOpen },
+    esporte: { label: "Treino", cls: "df-badge-esporte", icon: Dumbbell },
+    bemestar: { label: "Bem-estar", cls: "df-badge-bemestar", icon: HeartPulse },
     geral: { label: "Geral", cls: "df-badge-geral", icon: Circle },
   };
   const m = map[tipo] || map.geral;

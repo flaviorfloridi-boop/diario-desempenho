@@ -1,15 +1,18 @@
 import { useState, useRef } from "react";
-import { Download, Upload, Check, ExternalLink } from "lucide-react";
+import { Download, Upload, Check, ExternalLink, Link2, Unlink } from "lucide-react";
 import { exportarBackup, importarBackup } from "../lib/storage";
 
-export function ConfiguracoesView({ config, salvarApiKey, notifAtivas, ativarNotificacoes, recarregarDados }) {
-  const [chave, setChave] = useState(config.anthropicApiKey || "");
+export function ConfiguracoesView({
+  config, salvarGoogleClientId, googleConectado, googleErro, conectarGoogle, desconectarGoogle,
+  notifAtivas, ativarNotificacoes, recarregarDados,
+}) {
+  const [clientId, setClientId] = useState(config.googleClientId || "");
   const [salvo, setSalvo] = useState(false);
   const [importErro, setImportErro] = useState("");
   const fileRef = useRef(null);
 
   function salvar() {
-    salvarApiKey(chave.trim());
+    salvarGoogleClientId(clientId.trim());
     setSalvo(true);
     setTimeout(() => setSalvo(false), 2000);
   }
@@ -34,48 +37,56 @@ export function ConfiguracoesView({ config, salvarApiKey, notifAtivas, ativarNot
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div className="df-card">
-        <p className="df-config-label" style={{ marginBottom: 8 }}>Chave de API da Anthropic</p>
+        <p className="df-config-label" style={{ marginBottom: 8 }}>Google Calendar</p>
         <p className="df-config-help" style={{ marginBottom: 10 }}>
-          Necessária pra gerar o feedback da IA na aba Registro. Pegue a sua em{" "}
-          <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: "#2b5cf0", fontWeight: 700 }}>
-            console.anthropic.com <ExternalLink size={11} style={{ verticalAlign: -1 }} />
-          </a>
-          . Ela fica guardada só no seu navegador — nunca passa por nenhum outro servidor além do da própria Anthropic quando você usa o feedback.
+          Pra conectar de verdade (enviar tarefas direto pro seu Google Calendar com um clique, sem abrir o site do
+          Google toda vez), você precisa de um <strong>Client ID</strong> gratuito do Google Cloud. É diferente de
+          uma chave de API paga — é só um identificador público, não tem custo nenhum.
         </p>
+        <ol className="df-config-help" style={{ margin: "0 0 12px", paddingLeft: 18 }}>
+          <li>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noreferrer" style={{ color: "#2b5cf0", fontWeight: 700 }}>console.cloud.google.com <ExternalLink size={10} style={{ verticalAlign: -1 }} /></a> e crie um projeto</li>
+          <li>Vá em "APIs e Serviços" → ative a <strong>Google Calendar API</strong></li>
+          <li>Em "Credenciais" → "Criar credenciais" → <strong>ID do cliente OAuth</strong> → tipo "Aplicativo da Web"</li>
+          <li>Em "Origens JavaScript autorizadas", adicione o endereço deste site</li>
+          <li>Copie o Client ID gerado e cole abaixo</li>
+        </ol>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <input
             className="df-input"
-            type="password"
-            placeholder="sk-ant-…"
-            value={chave}
-            onChange={(e) => setChave(e.target.value)}
+            placeholder="xxxxxxxxxx.apps.googleusercontent.com"
+            value={clientId}
+            onChange={(e) => setClientId(e.target.value)}
             style={{ flex: 1, minWidth: 220 }}
           />
           <button className="df-btn-primary" onClick={salvar}>
-            {salvo ? <><Check size={15} /> Salvo</> : "Salvar chave"}
+            {salvo ? <><Check size={15} /> Salvo</> : "Salvar Client ID"}
           </button>
         </div>
+
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #e1e5f0", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          {googleConectado ? (
+            <>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: "#1c7a4d", display: "flex", alignItems: "center", gap: 5 }}><Link2 size={14} /> Conectado</span>
+              <button className="df-btn-ghost" onClick={desconectarGoogle}><Unlink size={13} /> Desconectar</button>
+            </>
+          ) : (
+            <button className="df-btn-ghost" onClick={conectarGoogle} disabled={!config.googleClientId}>
+              <Link2 size={13} /> Conectar ao Google Calendar
+            </button>
+          )}
+        </div>
+        {googleErro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#c0392b" }}>{googleErro}</p>}
       </div>
 
       <div className="df-card">
         <p className="df-config-label" style={{ marginBottom: 8 }}>Lembretes</p>
         <p className="df-config-help" style={{ marginBottom: 10 }}>
-          Notificações do navegador avisam sobre tarefas próximas enquanto esta aba estiver aberta. Pra receber
-          mesmo com o app fechado, instale este site como aplicativo (ícone de instalar na barra de endereço) —
-          isso ajuda, mas notificação 100% garantida com o app fechado exige um servidor próprio.
+          Notificações do navegador avisam sobre tarefas próximas enquanto o app está aberto. Instale como app
+          (opção no navegador) pra ter uma experiência melhor no celular.
         </p>
         <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} style={{ color: notifAtivas ? "#fff" : "#0b0e14", borderColor: notifAtivas ? "#2b5cf0" : "#e1e5f0" }} onClick={ativarNotificacoes}>
           {notifAtivas ? "Lembretes ativos" : "Ativar lembretes"}
         </button>
-      </div>
-
-      <div className="df-card">
-        <p className="df-config-label" style={{ marginBottom: 8 }}>Google Calendar</p>
-        <p className="df-config-help">
-          Cada tarefa da Agenda já exporta com um clique pro Google Calendar (sem precisar de login). Sincronização
-          automática e de mão dupla exige conectar uma conta Google — se quiser esse nível, é um próximo passo que
-          dá pra construir depois.
-        </p>
       </div>
 
       <div className="df-card">

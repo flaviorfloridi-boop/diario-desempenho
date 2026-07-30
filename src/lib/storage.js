@@ -24,9 +24,9 @@ export function salvarDados(dados) {
 export function carregarConfig() {
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
-    return raw ? JSON.parse(raw) : { anthropicApiKey: "" };
+    return raw ? JSON.parse(raw) : { googleClientId: "" };
   } catch {
-    return { anthropicApiKey: "" };
+    return { googleClientId: "" };
   }
 }
 

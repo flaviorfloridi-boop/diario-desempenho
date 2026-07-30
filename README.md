@@ -1,7 +1,9 @@
 # Diário de Desempenho
 
 Agenda com blocos de tempo, registro de estudos/treinos (voz ou texto) com
-feedback de IA, e revisão espaçada — pra vida acadêmica e esportiva.
+autoavaliação guiada, revisão espaçada e integração com Google Calendar —
+pra organizar escola, treino e bem-estar no dia a dia. 100% gratuito, sem
+nenhuma chave de API paga.
 
 ## Rodar localmente
 
@@ -15,18 +17,18 @@ Abre em `http://localhost:5173`.
 ## Como funciona
 
 - **Dados**: guardados só no seu navegador (localStorage), neste dispositivo.
-  Nada é enviado pra nenhum servidor, exceto quando você usa o feedback de IA
-  (aí sua chave e o texto do registro vão direto pra API da Anthropic).
-- **Feedback de IA**: configure sua chave em Configurações → Chave de API da
-  Anthropic. Pegue a sua em [console.anthropic.com](https://console.anthropic.com).
+  Nada é enviado pra nenhum servidor.
+- **Autoavaliação**: depois de registrar o que rolou (por voz ou texto), você
+  mesmo preenche o que foi bom, o que melhorar, e o próximo passo — sem
+  precisar de nenhuma IA paga.
 - **Voz**: usa o reconhecimento de fala do navegador (funciona bem no Chrome;
   em outros navegadores pode não estar disponível).
-- **Google Calendar**: cada tarefa exporta com um clique (sem precisar de
-  login). Sincronização de mão dupla automática não está incluída — exigiria
-  conectar OAuth do Google, o que dá pra adicionar depois se quiser.
+- **Google Calendar**: cada tarefa exporta com um clique (sem login). Se
+  quiser sincronização direta (um clique manda pro seu calendário sem abrir
+  o site do Google), configure um Client ID gratuito em Configurações — o
+  passo a passo está lá dentro do próprio app.
 - **Notificações**: locais, via navegador, funcionam enquanto o app está
-  aberto ou instalado como PWA. Push de verdade com o app fechado exigiria
-  um servidor.
+  aberto ou instalado como PWA.
 
 ## Publicar de graça
 
@@ -40,9 +42,9 @@ Esse projeto é 100% estático (sem backend) — qualquer um destes serve:
 ### GitHub Pages
 ```bash
 npm run build
+npx gh-pages -d dist
 ```
-Depois publique a pasta `dist/` gerada (dá pra automatizar com uma GitHub
-Action, ou usar `npm install -D gh-pages` e configurar o deploy).
+Depois ative em Settings → Pages → Source: branch `gh-pages`.
 
 ## Backup dos dados
 

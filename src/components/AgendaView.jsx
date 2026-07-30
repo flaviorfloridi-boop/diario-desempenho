@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus } from "lucide-react";
+import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus, Send, Loader2, CheckCheck } from "lucide-react";
 import { todayISO, addDaysISO, fmtDiaSemana, fmtDataLonga, uid, googleCalendarLink, HORAS_DIA } from "../lib/dates";
+import { criarEvento } from "../lib/googleCalendar";
 import { TipoBadge } from "./Shared";
 
-export function AgendaView({ dados, persist, selectedDate, setSelectedDate }) {
+export function AgendaView({ dados, persist, selectedDate, setSelectedDate, googleConectado, conectarGoogle }) {
   const [novo, setNovo] = useState({ inicio: "09:00", fim: "10:00", titulo: "", prioridade: "media", tipo: "academico" });
+  const [enviando, setEnviando] = useState(null);
+  const [enviados, setEnviados] = useState({});
 
   const tarefasDoDia = dados.tasks.filter((t) => t.data === selectedDate).sort((a, b) => a.inicio.localeCompare(b.inicio));
   const corPrioridade = { alta: "#c0392b", media: "#2b5cf0", baixa: "#5b6272" };
@@ -21,12 +24,29 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate }) {
   function remover(id) {
     persist({ ...dados, tasks: dados.tasks.filter((t) => t.id !== id) });
   }
+  async function enviarProGoogle(t) {
+    setEnviando(t.id);
+    try {
+      await criarEvento(t, selectedDate);
+      setEnviados((prev) => ({ ...prev, [t.id]: true }));
+    } catch {
+      // silencioso — se falhar, a pessoa ainda tem o link manual como alternativa
+    } finally {
+      setEnviando(null);
+    }
+  }
 
   return (
     <div>
       <DateNav selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
-      <div className="df-timeline" style={{ marginTop: 20 }}>
+      {!googleConectado && (
+        <button className="df-btn-ghost" onClick={conectarGoogle} style={{ marginTop: 14 }}>
+          <CalendarPlus size={14} /> Conectar ao Google Calendar
+        </button>
+      )}
+
+      <div className="df-timeline" style={{ marginTop: 16 }}>
         {HORAS_DIA.map((h) => {
           const hh = String(h).padStart(2, "0") + ":00";
           const nesta = tarefasDoDia.filter((t) => t.inicio.slice(0, 2) === String(h).padStart(2, "0"));
@@ -43,9 +63,16 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate }) {
                     <span className={`df-tarefa-titulo ${t.feita ? "feita" : ""}`} style={{ fontSize: 13.5 }}>{t.titulo}</span>
                     <TipoBadge tipo={t.tipo} />
                     <span style={{ width: 6, height: 6, borderRadius: 99, background: corPrioridade[t.prioridade], flexShrink: 0 }} />
-                    <a href={googleCalendarLink(t, selectedDate)} target="_blank" rel="noreferrer" title="Adicionar ao Google Calendar" style={{ display: "flex", color: "#5b6272", opacity: 0.6 }}>
-                      <CalendarPlus size={13} />
-                    </a>
+
+                    {googleConectado ? (
+                      <button className="df-icon-btn" onClick={() => enviarProGoogle(t)} disabled={enviando === t.id || enviados[t.id]} title="Enviar pro Google Calendar" style={{ color: enviados[t.id] ? "#1c7a4d" : "#5b6272", opacity: 0.75 }}>
+                        {enviando === t.id ? <Loader2 size={13} className="df-spin" /> : enviados[t.id] ? <CheckCheck size={13} /> : <Send size={13} />}
+                      </button>
+                    ) : (
+                      <a href={googleCalendarLink(t, selectedDate)} target="_blank" rel="noreferrer" title="Adicionar ao Google Calendar" style={{ display: "flex", color: "#5b6272", opacity: 0.6 }}>
+                        <CalendarPlus size={13} />
+                      </a>
+                    )}
                     <button className="df-icon-btn" onClick={() => remover(t.id)} style={{ opacity: 0.45 }}>
                       <Trash2 size={13} />
                     </button>
@@ -64,8 +91,9 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate }) {
           <input className="df-input" type="time" value={novo.fim} onChange={(e) => setNovo({ ...novo, fim: e.target.value })} style={{ width: 88 }} />
           <input className="df-input" placeholder="O que vai fazer?" value={novo.titulo} onChange={(e) => setNovo({ ...novo, titulo: e.target.value })} onKeyDown={(e) => e.key === "Enter" && addTarefa()} style={{ flex: 1, minWidth: 140 }} />
           <select className="df-input" value={novo.tipo} onChange={(e) => setNovo({ ...novo, tipo: e.target.value })} style={{ width: 130 }}>
-            <option value="academico">Acadêmico</option>
-            <option value="esporte">Esporte</option>
+            <option value="academico">Escola/TI</option>
+            <option value="esporte">Treino</option>
+            <option value="bemestar">Bem-estar</option>
             <option value="geral">Geral</option>
           </select>
           <select className="df-input" value={novo.prioridade} onChange={(e) => setNovo({ ...novo, prioridade: e.target.value })} style={{ width: 160 }}>
@@ -76,7 +104,9 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate }) {
           <button onClick={addTarefa} className="df-btn-primary"><Plus size={15} /> Adicionar</button>
         </div>
         <p style={{ margin: "10px 0 0", fontSize: 11.5, color: "#5b6272" }}>
-          Clique no ícone <CalendarPlus size={11} style={{ verticalAlign: -1 }} /> ao lado de uma tarefa pra exportar ela pro seu Google Calendar com um clique.
+          {googleConectado
+            ? <>Clique no ícone <Send size={11} style={{ verticalAlign: -1 }} /> ao lado de uma tarefa pra enviar direto pro seu Google Calendar.</>
+            : <>Clique no ícone <CalendarPlus size={11} style={{ verticalAlign: -1 }} /> pra exportar com um clique, ou conecte sua conta acima pra enviar direto.</>}
         </p>
       </div>
     </div>
