@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus, Send, Loader2, CheckCheck } from "lucide-react";
+import { Plus, Trash2, Check, Circle, ChevronLeft, ChevronRight, CalendarPlus, Send, Loader2, CheckCheck, Download } from "lucide-react";
 import { todayISO, addDaysISO, fmtDiaSemana, fmtDataLonga, uid, googleCalendarLink, HORAS_DIA } from "../lib/dates";
 import { criarEvento } from "../lib/googleCalendar";
+import { baixarICS } from "../lib/ics";
 import { TipoBadge } from "./Shared";
 
 export function AgendaView({ dados, persist, selectedDate, setSelectedDate, googleConectado, conectarGoogle }) {
@@ -73,6 +74,9 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                         <CalendarPlus size={13} />
                       </a>
                     )}
+                    <button className="df-icon-btn" onClick={() => baixarICS(t, selectedDate)} title="Baixar .ics (Apple Calendar, Outlook, etc.)" style={{ opacity: 0.6 }}>
+                      <Download size={13} />
+                    </button>
                     <button className="df-icon-btn" onClick={() => remover(t.id)} style={{ opacity: 0.45 }}>
                       <Trash2 size={13} />
                     </button>
@@ -105,8 +109,8 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
         </div>
         <p style={{ margin: "10px 0 0", fontSize: 11.5, color: "#5b6272" }}>
           {googleConectado
-            ? <>Clique no ícone <Send size={11} style={{ verticalAlign: -1 }} /> ao lado de uma tarefa pra enviar direto pro seu Google Calendar.</>
-            : <>Clique no ícone <CalendarPlus size={11} style={{ verticalAlign: -1 }} /> pra exportar com um clique, ou conecte sua conta acima pra enviar direto.</>}
+            ? <>Clique no ícone <Send size={11} style={{ verticalAlign: -1 }} /> pra enviar direto pro Google Calendar, ou <Download size={11} style={{ verticalAlign: -1 }} /> pra baixar um arquivo .ics (funciona no Apple Calendar, Outlook e outros).</>
+            : <>Clique em <CalendarPlus size={11} style={{ verticalAlign: -1 }} /> pra exportar pro Google com um clique, ou em <Download size={11} style={{ verticalAlign: -1 }} /> pra baixar um arquivo .ics — esse funciona no Apple Calendar (iPhone/Mac), Outlook, e praticamente qualquer app de calendário.</>}
         </p>
       </div>
     </div>

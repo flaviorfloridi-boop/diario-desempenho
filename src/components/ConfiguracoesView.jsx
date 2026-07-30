@@ -37,11 +37,20 @@ export function ConfiguracoesView({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       <div className="df-card">
+        <p className="df-config-label" style={{ marginBottom: 8 }}>Calendário</p>
+        <p className="df-config-help" style={{ marginBottom: 10 }}>
+          <strong>Usa iPhone/Mac com Apple Calendar?</strong> Na Agenda, clique no ícone de baixar (⬇) ao lado de
+          qualquer tarefa — ele gera um arquivo <code>.ics</code> que abre direto no Calendário da Apple com um
+          toque. Funciona também no Outlook e em qualquer outro app de calendário, sem precisar configurar nada.
+        </p>
+      </div>
+
+      <div className="df-card">
         <p className="df-config-label" style={{ marginBottom: 8 }}>Google Calendar</p>
         <p className="df-config-help" style={{ marginBottom: 10 }}>
-          Pra conectar de verdade (enviar tarefas direto pro seu Google Calendar com um clique, sem abrir o site do
-          Google toda vez), você precisa de um <strong>Client ID</strong> gratuito do Google Cloud. É diferente de
-          uma chave de API paga — é só um identificador público, não tem custo nenhum.
+          Se preferir Google especificamente, dá pra conectar de verdade (enviar tarefas direto pro seu Google
+          Calendar com um clique, sem baixar arquivo nenhum) usando um <strong>Client ID</strong> gratuito do
+          Google Cloud. É diferente de uma chave de API paga — é só um identificador público, não tem custo nenhum.
         </p>
         <ol className="df-config-help" style={{ margin: "0 0 12px", paddingLeft: 18 }}>
           <li>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noreferrer" style={{ color: "#2b5cf0", fontWeight: 700 }}>console.cloud.google.com <ExternalLink size={10} style={{ verticalAlign: -1 }} /></a> e crie um projeto</li>

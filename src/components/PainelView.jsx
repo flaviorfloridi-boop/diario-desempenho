@@ -107,9 +107,9 @@ export function PainelView({ dados }) {
       <div className="df-info-box" style={{ marginTop: 24 }}>
         <p className="df-info-titulo">Sobre as integrações</p>
         <p className="df-info-texto">
-          Cada tarefa da Agenda tem um botão pra exportar direto pro seu Google Calendar. Sincronização automática
-          nos dois sentidos e notificações push de verdade no celular exigem configuração adicional — veja a aba
-          Configurações.
+          Cada tarefa da Agenda pode ser exportada pro Google Calendar com um clique, ou baixada como arquivo
+          .ics — que funciona no Apple Calendar, Outlook e qualquer outro app. Sincronização automática de mão
+          dupla e notificações push de verdade no celular exigem configuração adicional — veja a aba Configurações.
         </p>
       </div>
     </div>
