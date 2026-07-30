@@ -105,33 +105,35 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                       </div>
                     </div>
 
-                    <div className="df-bloco-acoes" style={{ position: "relative" }}>
-                      <button className="df-icon-btn" onClick={() => setMenuAberto(menuAberto === t.id ? null : t.id)} style={{ opacity: 0.55 }}>
-                        <MoreHorizontal size={16} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      <button className="df-menu-trigger" onClick={() => baixarICS(t, selectedDate)} title="Baixar .ics — abre no Apple Calendar, Outlook, etc.">
+                        <Download size={16} />
                       </button>
-                      {menuAberto === t.id && (
-                        <>
-                          <div style={{ position: "fixed", inset: 0, zIndex: 19 }} onClick={() => setMenuAberto(null)} />
-                          <div className="df-menu-flutuante">
-                            {googleConectado ? (
-                              <button className="df-menu-item" onClick={() => { enviarProGoogle(t); setMenuAberto(null); }} disabled={enviando === t.id}>
-                                {enviando === t.id ? <Loader2 size={14} className="df-spin" /> : enviados[t.id] ? <CheckCheck size={14} color="#1c7a4d" /> : <Send size={14} />}
-                                {enviados[t.id] ? "Enviado ao Google" : "Enviar ao Google Calendar"}
+                      <div className="df-bloco-acoes" style={{ position: "relative" }}>
+                        <button className="df-menu-trigger" onClick={() => setMenuAberto(menuAberto === t.id ? null : t.id)}>
+                          <MoreHorizontal size={18} />
+                        </button>
+                        {menuAberto === t.id && (
+                          <>
+                            <div style={{ position: "fixed", inset: 0, zIndex: 19 }} onClick={() => setMenuAberto(null)} />
+                            <div className="df-menu-flutuante">
+                              {googleConectado ? (
+                                <button className="df-menu-item" onClick={() => { enviarProGoogle(t); setMenuAberto(null); }} disabled={enviando === t.id}>
+                                  {enviando === t.id ? <Loader2 size={14} className="df-spin" /> : enviados[t.id] ? <CheckCheck size={14} color="#1c7a4d" /> : <Send size={14} />}
+                                  {enviados[t.id] ? "Enviado ao Google" : "Enviar ao Google Calendar"}
+                                </button>
+                              ) : (
+                                <a className="df-menu-item" href={googleCalendarLink(t, selectedDate)} target="_blank" rel="noreferrer" onClick={() => setMenuAberto(null)}>
+                                  <CalendarPlus size={14} /> Adicionar ao Google Calendar
+                                </a>
+                              )}
+                              <button className="df-menu-item destrutivo" onClick={() => remover(t.id)}>
+                                <Trash2 size={14} /> Remover
                               </button>
-                            ) : (
-                              <a className="df-menu-item" href={googleCalendarLink(t, selectedDate)} target="_blank" rel="noreferrer" onClick={() => setMenuAberto(null)}>
-                                <CalendarPlus size={14} /> Adicionar ao Google Calendar
-                              </a>
-                            )}
-                            <button className="df-menu-item" onClick={() => { baixarICS(t, selectedDate); setMenuAberto(null); }}>
-                              <Download size={14} /> Baixar .ics (Apple/Outlook)
-                            </button>
-                            <button className="df-menu-item destrutivo" onClick={() => remover(t.id)}>
-                              <Trash2 size={14} /> Remover
-                            </button>
-                          </div>
-                        </>
-                      )}
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -207,7 +209,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
       )}
 
       <p style={{ margin: "12px 0 0", fontSize: 11.5, color: "#5b6272", textAlign: "center" }}>
-        Toque nos <MoreHorizontal size={12} style={{ verticalAlign: -2 }} /> de cada tarefa pra exportar pro Google Calendar ou baixar um .ics (Apple Calendar, Outlook…).
+        O ícone <Download size={12} style={{ verticalAlign: -2 }} /> baixa um .ics (abre no Apple Calendar, Outlook…). O <MoreHorizontal size={12} style={{ verticalAlign: -2 }} /> tem mais opções (Google Calendar, remover).
       </p>
     </div>
   );
