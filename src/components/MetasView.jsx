@@ -79,23 +79,23 @@ export function MetasView({ dados, persist }) {
                 return (
                   <div key={meta.id} className="df-card">
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                      <Target size={16} color="#2b5cf0" style={{ flexShrink: 0 }} />
+                      <Target size={16} color="var(--blue)" style={{ flexShrink: 0 }} />
                       <p style={{ margin: 0, fontSize: 15, fontWeight: 800, flex: 1 }}>{meta.titulo}</p>
                       <button className="df-icon-btn" onClick={() => remover(meta.id)} style={{ opacity: 0.4 }}><Trash2 size={15} /></button>
                     </div>
                     {total > 0 && (
                       <div style={{ marginBottom: 10 }}>
-                        <div style={{ width: "100%", height: 6, borderRadius: 3, background: "#e1e5f0", overflow: "hidden" }}>
-                          <div style={{ width: `${pct}%`, height: "100%", background: "#2b5cf0" }} />
+                        <div style={{ width: "100%", height: 6, borderRadius: 3, background: "var(--line)", overflow: "hidden" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", background: "var(--blue)" }} />
                         </div>
-                        <p style={{ margin: "4px 0 0", fontSize: 11.5, color: "#5b6272" }}>{feitos}/{total} concluído(s) · {pct}%</p>
+                        <p style={{ margin: "4px 0 0", fontSize: 11.5, color: "var(--ink-soft)" }}>{feitos}/{total} concluído(s) · {pct}%</p>
                       </div>
                     )}
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 8 }}>
                       {meta.checklist.map((item) => (
                         <div key={item.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                           <button className="df-icon-btn" onClick={() => toggleItem(meta.id, item.id)}>
-                            {item.feito ? <Check size={14} color="#2b5cf0" /> : <Circle size={14} color="#5b6272" />}
+                            {item.feito ? <Check size={14} color="var(--blue)" /> : <Circle size={14} color="var(--ink-soft)" />}
                           </button>
                           <span style={{ flex: 1, fontSize: 13, textDecoration: item.feito ? "line-through" : "none", opacity: item.feito ? 0.6 : 1 }}>{item.texto}</span>
                           <button className="df-icon-btn" onClick={() => removerItem(meta.id, item.id)} style={{ opacity: 0.35 }}><Trash2 size={12} /></button>
@@ -113,7 +113,7 @@ export function MetasView({ dados, persist }) {
                       />
                       <button className="df-btn-ghost" onClick={() => addItemChecklist(meta.id)}>+</button>
                     </div>
-                    <p style={{ margin: "8px 0 0", fontSize: 11, color: "#5b6272" }}>Criada em {fmtDataCurta(meta.createdAt)}</p>
+                    <p style={{ margin: "8px 0 0", fontSize: 11, color: "var(--ink-soft)" }}>Criada em {fmtDataCurta(meta.createdAt)}</p>
                   </div>
                 );
               })}

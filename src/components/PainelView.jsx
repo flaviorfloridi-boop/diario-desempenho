@@ -47,14 +47,14 @@ export function PainelView({ dados }) {
         <div style={{ width: "100%", height: 220 }}>
           <ResponsiveContainer>
             <BarChart data={ultimos7} margin={{ left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e1e5f0" vertical={false} />
-              <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "#5b6272" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#5b6272" }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e1e5f0", fontSize: 13 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" vertical={false} />
+              <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "var(--ink-soft)" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "var(--ink-soft)" }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid var(--line)", fontSize: 13, background: "var(--white)", color: "var(--ink)" }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="academico" name="Escola/TI" stackId="a" fill="#2b5cf0" />
-              <Bar dataKey="esporte" name="Treino" stackId="a" fill="#0b0e14" />
-              <Bar dataKey="bemestar" name="Bem-estar" stackId="a" fill="#0f6b47" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="academico" name="Escola/TI" stackId="a" fill="var(--blue)" />
+              <Bar dataKey="esporte" name="Treino" stackId="a" fill="var(--ink)" />
+              <Bar dataKey="bemestar" name="Bem-estar" stackId="a" fill="var(--green)" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -66,11 +66,11 @@ export function PainelView({ dados }) {
           <div style={{ width: "100%", height: 140 }}>
             <ResponsiveContainer>
               <LineChart data={humorSemana} margin={{ left: -20, top: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e1e5f0" vertical={false} />
-                <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "#5b6272" }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" vertical={false} />
+                <XAxis dataKey="dia" tick={{ fontSize: 12, fill: "var(--ink-soft)" }} axisLine={false} tickLine={false} />
                 <YAxis domain={[1, 5]} ticks={[1, 2, 3, 4, 5]} tickFormatter={(v) => HUMOR_EMOJI[v]} tick={{ fontSize: 13 }} axisLine={false} tickLine={false} width={28} />
-                <Tooltip formatter={(v) => [HUMOR_EMOJI[v] || "—", "Humor"]} contentStyle={{ borderRadius: 8, border: "1px solid #e1e5f0", fontSize: 13 }} />
-                <Line type="monotone" dataKey="humor" stroke="#2b5cf0" strokeWidth={2.5} dot={{ r: 4, fill: "#2b5cf0" }} connectNulls />
+                <Tooltip formatter={(v) => [HUMOR_EMOJI[v] || "—", "Humor"]} contentStyle={{ borderRadius: 8, border: "1px solid var(--line)", fontSize: 13, background: "var(--white)", color: "var(--ink)" }} />
+                <Line type="monotone" dataKey="humor" stroke="var(--blue)" strokeWidth={2.5} dot={{ r: 4, fill: "var(--blue)" }} connectNulls />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -84,7 +84,7 @@ export function PainelView({ dados }) {
             {habitosOrdenados.map((h) => (
               <div key={h.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ flex: 1, fontSize: 13 }}>{h.nome}</span>
-                <Flame size={13} color={h.streak > 0 ? "#c0392b" : "#c7ccd6"} />
+                <Flame size={13} color={h.streak > 0 ? "var(--red)" : "var(--line)"} />
                 <span style={{ fontSize: 12.5, fontWeight: 700, minWidth: 60, textAlign: "right" }}>{h.streak} dia{h.streak !== 1 ? "s" : ""}</span>
               </div>
             ))}
@@ -97,7 +97,7 @@ export function PainelView({ dados }) {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           {dados.areas.map((a) => (
             <div key={a.id} className="df-ring-card">
-              <GrowthRing level={a.mastery} size={40} cor={a.tipo === "esporte" ? "#0b0e14" : a.tipo === "bemestar" ? "#0f6b47" : "#2b5cf0"} />
+              <GrowthRing level={a.mastery} size={40} cor={a.tipo === "esporte" ? "var(--ink)" : a.tipo === "bemestar" ? "var(--green)" : "var(--blue)"} />
               <span className="df-ring-nome">{a.nome}</span>
             </div>
           ))}

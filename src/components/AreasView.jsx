@@ -4,7 +4,7 @@ import { todayISO, fmtDataCurta, uid } from "../lib/dates";
 import { GrowthRing } from "./GrowthRing";
 import { EmptyState } from "./Shared";
 
-const CORES = { academico: "#2b5cf0", esporte: "#0b0e14", bemestar: "#0f6b47" };
+const CORES = { academico: "var(--blue)", esporte: "var(--ink)", bemestar: "var(--green)" };
 const SUGESTOES = [
   { nome: "Escola", tipo: "academico" },
   { nome: "TI com o pai", tipo: "academico" },
@@ -56,7 +56,7 @@ export function AreasView({ dados, persist }) {
 
       {dados.areas.length === 0 && sugestoesDisponiveis.length > 0 && (
         <div style={{ marginBottom: 18 }}>
-          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#5b6272" }}>Pra começar rápido, toque pra adicionar:</p>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "var(--ink-soft)" }}>Pra começar rápido, toque pra adicionar:</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {sugestoesDisponiveis.map((s) => (
               <button key={s.nome} className="df-btn-ghost" onClick={() => addArea(s.nome, s.tipo)}>
@@ -80,7 +80,7 @@ export function AreasView({ dados, persist }) {
                 <p className="df-area-nome"><Icon size={14} />{a.nome}</p>
                 <p className="df-area-meta">
                   {total} registro(s) · {a.lastActivity ? `última vez ${fmtDataCurta(a.lastActivity)}` : "ainda não iniciado"}
-                  {a.nextReview && (a.nextReview <= hoje ? <span style={{ color: "#c0392b", fontWeight: 700 }}> · revisar hoje</span> : ` · próxima ${fmtDataCurta(a.nextReview)}`)}
+                  {a.nextReview && (a.nextReview <= hoje ? <span style={{ color: "var(--red)", fontWeight: 700 }}> · revisar hoje</span> : ` · próxima ${fmtDataCurta(a.nextReview)}`)}
                 </p>
               </div>
               <button className="df-icon-btn" onClick={() => remover(a.id)} style={{ opacity: 0.4 }}><Trash2 size={15} /></button>

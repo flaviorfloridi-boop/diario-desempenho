@@ -58,15 +58,15 @@ export function HojeView({ dados, persist }) {
                   onClick={() => toggleHabito(h.id)}
                   style={{
                     display: "flex", alignItems: "center", gap: 6, padding: "7px 12px", borderRadius: 999, fontSize: 12.5, fontWeight: 700, cursor: "pointer",
-                    background: feito ? "#2b5cf0" : "#fff", color: feito ? "#fff" : "#0b0e14", border: feito ? "none" : "1px solid #e1e5f0",
+                    background: feito ? "var(--blue)" : "var(--white)", color: feito ? "var(--white)" : "var(--ink)", border: feito ? "none" : "1px solid var(--line)",
                   }}
                 >
-                  {feito ? <Check size={12} /> : <Flame size={12} color="#c0392b" />} {h.nome}
+                  {feito ? <Check size={12} /> : <Flame size={12} color="var(--red)" />} {h.nome}
                 </button>
               );
             })}
           </div>
-          {habitosPendentes.length === 0 && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#1c7a4d", fontWeight: 700 }}>✓ Todos os hábitos de hoje concluídos!</p>}
+          {habitosPendentes.length === 0 && <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--green)", fontWeight: 700 }}>✓ Todos os hábitos de hoje concluídos!</p>}
         </div>
       )}
 
@@ -77,7 +77,7 @@ export function HojeView({ dados, persist }) {
           {tarefas.map((t) => (
             <div key={t.id} className={`df-tarefa-row ${t.feita ? "feita" : ""}`}>
               <button className="df-icon-btn" onClick={() => toggleFeita(t.id)}>
-                {t.feita ? <Check size={17} color="#2b5cf0" /> : <Circle size={17} color="#5b6272" />}
+                {t.feita ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--ink-soft)" />}
               </button>
               <span className="df-tarefa-hora">{t.inicio}</span>
               <span className={`df-tarefa-titulo ${t.feita ? "feita" : ""}`}>{t.titulo}</span>
@@ -96,10 +96,10 @@ export function HojeView({ dados, persist }) {
               const feitos = m.checklist.filter((i) => i.feito).length;
               const pct = total > 0 ? Math.round((feitos / total) * 100) : 0;
               return (
-                <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "#fff", border: "1px solid #e1e5f0", borderRadius: 10, padding: "9px 12px" }}>
-                  <Target size={14} color="#2b5cf0" style={{ flexShrink: 0 }} />
+                <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 10, background: "var(--white)", border: "1px solid var(--line)", borderRadius: 10, padding: "9px 12px" }}>
+                  <Target size={14} color="var(--blue)" style={{ flexShrink: 0 }} />
                   <span style={{ flex: 1, fontSize: 13 }}>{m.titulo}</span>
-                  {total > 0 && <span style={{ fontSize: 11.5, color: "#5b6272", fontWeight: 700 }}>{pct}%</span>}
+                  {total > 0 && <span style={{ fontSize: 11.5, color: "var(--ink-soft)", fontWeight: 700 }}>{pct}%</span>}
                 </div>
               );
             })}

@@ -64,7 +64,7 @@ export function HabitosView({ dados, persist }) {
 
       {dados.habits.length === 0 && sugestoesDisponiveis.length > 0 && (
         <div style={{ marginBottom: 18 }}>
-          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "#5b6272" }}>Pra começar rápido, toque pra adicionar:</p>
+          <p style={{ margin: "0 0 8px", fontSize: 12.5, color: "var(--ink-soft)" }}>Pra começar rápido, toque pra adicionar:</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {sugestoesDisponiveis.map((s) => (
               <button key={s} className="df-btn-ghost" onClick={() => addHabito(s)}><Plus size={13} /> {s}</button>
@@ -86,15 +86,15 @@ export function HabitosView({ dados, persist }) {
                   className="df-icon-btn"
                   style={{
                     width: 32, height: 32, borderRadius: 999, display: "grid", placeItems: "center",
-                    background: feitoHoje ? "#2b5cf0" : "#f4f6fb", border: feitoHoje ? "none" : "1px solid #e1e5f0",
+                    background: feitoHoje ? "var(--blue)" : "var(--paper)", border: feitoHoje ? "none" : "1px solid var(--line)",
                   }}
                 >
-                  <Check size={16} color={feitoHoje ? "#fff" : "#5b6272"} />
+                  <Check size={16} color={feitoHoje ? "var(--white)" : "var(--ink-soft)"} />
                 </button>
                 <div style={{ flex: 1 }}>
                   <p style={{ margin: 0, fontSize: 14.5, fontWeight: 700 }}>{h.nome}</p>
-                  <p style={{ margin: "1px 0 0", fontSize: 12, color: "#5b6272", display: "flex", alignItems: "center", gap: 4 }}>
-                    {streak > 0 && <Flame size={12} color="#c0392b" />}
+                  <p style={{ margin: "1px 0 0", fontSize: 12, color: "var(--ink-soft)", display: "flex", alignItems: "center", gap: 4 }}>
+                    {streak > 0 && <Flame size={12} color="var(--red)" />}
                     {streak === 0 ? "Sem sequência ainda" : `${streak} dia${streak > 1 ? "s" : ""} seguido${streak > 1 ? "s" : ""}`}
                   </p>
                 </div>
@@ -107,7 +107,7 @@ export function HabitosView({ dados, persist }) {
                     title={d}
                     style={{
                       flex: 1, height: 8, borderRadius: 4,
-                      background: h.datas.includes(d) ? "#2b5cf0" : "#e1e5f0",
+                      background: h.datas.includes(d) ? "var(--blue)" : "var(--line)",
                     }}
                   />
                 ))}

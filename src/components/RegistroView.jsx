@@ -51,10 +51,10 @@ export function RegistroView({ dados, persist }) {
           <select className="df-input" value={areaId} onChange={(e) => setAreaId(e.target.value)} style={{ width: 220, fontWeight: 700 }}>
             {dados.areas.map((a) => <option key={a.id} value={a.id}>{a.nome}</option>)}
           </select>
-          <label style={{ fontSize: 12.5, color: "#5b6272", display: "flex", alignItems: "center", gap: 6 }}>
+          <label style={{ fontSize: 12.5, color: "var(--ink-soft)", display: "flex", alignItems: "center", gap: 6 }}>
             Minutos <input className="df-input" type="number" min={5} step={5} value={minutos} onChange={(e) => setMinutos(Number(e.target.value))} style={{ width: 64 }} />
           </label>
-          <label style={{ fontSize: 12.5, color: "#5b6272", display: "flex", alignItems: "center", gap: 6 }}>
+          <label style={{ fontSize: 12.5, color: "var(--ink-soft)", display: "flex", alignItems: "center", gap: 6 }}>
             Nível agora
             <select className="df-input" value={mastery} onChange={(e) => setMastery(Number(e.target.value))} style={{ width: 70 }}>
               {[0, 1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}/5</option>)}
@@ -77,20 +77,20 @@ export function RegistroView({ dados, persist }) {
             </button>
           )}
         </div>
-        {!suportado && <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "#5b6272" }}>Seu navegador não suporta ditado por voz aqui — pode digitar normalmente.</p>}
+        {!suportado && <p style={{ margin: "6px 0 0", fontSize: 11.5, color: "var(--ink-soft)" }}>Seu navegador não suporta ditado por voz aqui — pode digitar normalmente.</p>}
 
         <p className="df-section-label" style={{ margin: "16px 0 6px" }}>Sua autoavaliação (opcional, mas ajuda muito)</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
-            <ThumbsUp size={13} color="#1c7a4d" style={{ flexShrink: 0 }} />
+            <ThumbsUp size={13} color="var(--green)" style={{ flexShrink: 0 }} />
             <input className="df-input" placeholder="O que foi bom hoje?" value={bom} onChange={(e) => setBom(e.target.value)} style={{ flex: 1 }} />
           </label>
           <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
-            <Lightbulb size={13} color="#a8460f" style={{ flexShrink: 0 }} />
+            <Lightbulb size={13} color="var(--amber)" style={{ flexShrink: 0 }} />
             <input className="df-input" placeholder="O que dá pra melhorar?" value={melhorar} onChange={(e) => setMelhorar(e.target.value)} style={{ flex: 1 }} />
           </label>
           <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5 }}>
-            <Target size={13} color="#2b5cf0" style={{ flexShrink: 0 }} />
+            <Target size={13} color="var(--blue)" style={{ flexShrink: 0 }} />
             <input className="df-input" placeholder="Próximo passo pra próxima vez" value={proximoPasso} onChange={(e) => setProximoPasso(e.target.value)} style={{ flex: 1 }} />
           </label>
         </div>

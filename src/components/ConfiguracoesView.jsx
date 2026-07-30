@@ -53,7 +53,7 @@ export function ConfiguracoesView({
           Google Cloud. É diferente de uma chave de API paga — é só um identificador público, não tem custo nenhum.
         </p>
         <ol className="df-config-help" style={{ margin: "0 0 12px", paddingLeft: 18 }}>
-          <li>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noreferrer" style={{ color: "#2b5cf0", fontWeight: 700 }}>console.cloud.google.com <ExternalLink size={10} style={{ verticalAlign: -1 }} /></a> e crie um projeto</li>
+          <li>Acesse <a href="https://console.cloud.google.com" target="_blank" rel="noreferrer" style={{ color: "var(--blue)", fontWeight: 700 }}>console.cloud.google.com <ExternalLink size={10} style={{ verticalAlign: -1 }} /></a> e crie um projeto</li>
           <li>Vá em "APIs e Serviços" → ative a <strong>Google Calendar API</strong></li>
           <li>Em "Credenciais" → "Criar credenciais" → <strong>ID do cliente OAuth</strong> → tipo "Aplicativo da Web"</li>
           <li>Em "Origens JavaScript autorizadas", adicione o endereço deste site</li>
@@ -72,10 +72,10 @@ export function ConfiguracoesView({
           </button>
         </div>
 
-        <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #e1e5f0", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid var(--line)", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           {googleConectado ? (
             <>
-              <span style={{ fontSize: 12.5, fontWeight: 700, color: "#1c7a4d", display: "flex", alignItems: "center", gap: 5 }}><Link2 size={14} /> Conectado</span>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--green)", display: "flex", alignItems: "center", gap: 5 }}><Link2 size={14} /> Conectado</span>
               <button className="df-btn-ghost" onClick={desconectarGoogle}><Unlink size={13} /> Desconectar</button>
             </>
           ) : (
@@ -84,7 +84,7 @@ export function ConfiguracoesView({
             </button>
           )}
         </div>
-        {googleErro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#c0392b" }}>{googleErro}</p>}
+        {googleErro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--red)" }}>{googleErro}</p>}
       </div>
 
       <div className="df-card">
@@ -93,7 +93,7 @@ export function ConfiguracoesView({
           Notificações do navegador avisam sobre tarefas próximas enquanto o app está aberto. Instale como app
           (opção no navegador) pra ter uma experiência melhor no celular.
         </p>
-        <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} style={{ color: notifAtivas ? "#fff" : "#0b0e14", borderColor: notifAtivas ? "#2b5cf0" : "#e1e5f0" }} onClick={ativarNotificacoes}>
+        <button className={`df-notif-btn ${notifAtivas ? "active" : ""}`} style={{ color: notifAtivas ? "var(--white)" : "var(--ink)", borderColor: notifAtivas ? "var(--blue)" : "var(--line)" }} onClick={ativarNotificacoes}>
           {notifAtivas ? "Lembretes ativos" : "Ativar lembretes"}
         </button>
       </div>
@@ -109,7 +109,7 @@ export function ConfiguracoesView({
           <button className="df-btn-ghost" onClick={() => fileRef.current?.click()}><Upload size={14} /> Importar backup</button>
           <input ref={fileRef} type="file" accept="application/json" onChange={onImportar} style={{ display: "none" }} />
         </div>
-        {importErro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "#c0392b" }}>{importErro}</p>}
+        {importErro && <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--red)" }}>{importErro}</p>}
       </div>
     </div>
   );

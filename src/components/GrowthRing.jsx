@@ -1,4 +1,4 @@
-export function GrowthRing({ level, size = 34, cor = "#2b5cf0" }) {
+export function GrowthRing({ level, size = 34, cor = "var(--blue)" }) {
   const rings = [1, 2, 3, 4, 5];
   const center = size / 2;
   return (
@@ -13,13 +13,13 @@ export function GrowthRing({ level, size = 34, cor = "#2b5cf0" }) {
             cy={center}
             r={radius}
             fill="none"
-            stroke={filled ? cor : "#e1e5f0"}
+            stroke={filled ? cor : "var(--line)"}
             strokeWidth={filled ? 2.4 : 1}
             opacity={filled ? 1 - (5 - r) * 0.1 : 1}
           />
         );
       })}
-      <circle cx={center} cy={center} r={1.6} fill={level > 0 ? cor : "#e1e5f0"} />
+      <circle cx={center} cy={center} r={1.6} fill={level > 0 ? cor : "var(--line)"} />
     </svg>
   );
 }

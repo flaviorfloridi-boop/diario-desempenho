@@ -5,8 +5,8 @@ import { criarEvento } from "../lib/googleCalendar";
 import { baixarICS } from "../lib/ics";
 import { TipoBadge } from "./Shared";
 
-const COR_TIPO = { academico: "#2b5cf0", esporte: "#0b0e14", bemestar: "#0f6b47", geral: "#5b6272" };
-const COR_PRIORIDADE = { alta: "#c0392b", media: "#2b5cf0", baixa: "#94a0b4" };
+const COR_TIPO = { academico: "var(--blue)", esporte: "var(--steel)", bemestar: "var(--green)", geral: "var(--ink-soft)" };
+const COR_PRIORIDADE = { alta: "var(--red)", media: "var(--blue)", baixa: "var(--ink-soft)" };
 const LABEL_PRIORIDADE = { alta: "Urgente + importante", media: "Importante", baixa: "Se sobrar tempo" };
 
 export function AgendaView({ dados, persist, selectedDate, setSelectedDate, googleConectado, conectarGoogle }) {
@@ -53,12 +53,12 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14, flexWrap: "wrap", gap: 8 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 12.5, color: "#5b6272" }}>
+          <span style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>
             {tarefasDoDia.length === 0 ? "Nenhum bloco hoje" : `${feitas}/${tarefasDoDia.length} concluído${feitas === 1 ? "" : "s"}`}
           </span>
           {tarefasDoDia.length > 0 && (
-            <div style={{ width: 60, height: 5, borderRadius: 3, background: "#e1e5f0", overflow: "hidden" }}>
-              <div style={{ width: `${(feitas / tarefasDoDia.length) * 100}%`, height: "100%", background: "#2b5cf0", transition: "width 0.3s ease" }} />
+            <div style={{ width: 60, height: 5, borderRadius: 3, background: "var(--line)", overflow: "hidden" }}>
+              <div style={{ width: `${(feitas / tarefasDoDia.length) * 100}%`, height: "100%", background: "var(--blue)", transition: "width 0.3s ease" }} />
             </div>
           )}
         </div>
@@ -88,7 +88,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                     style={{ borderLeftColor: COR_TIPO[t.tipo] || COR_TIPO.geral }}
                   >
                     <button className="df-icon-btn" onClick={() => toggleFeita(t.id)} style={{ flexShrink: 0 }}>
-                      {t.feita ? <Check size={17} color="#2b5cf0" /> : <Circle size={17} color="#c7ccd6" />}
+                      {t.feita ? <Check size={17} color="var(--blue)" /> : <Circle size={17} color="var(--line)" />}
                     </button>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -119,7 +119,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                             <div className="df-menu-flutuante">
                               {googleConectado ? (
                                 <button className="df-menu-item" onClick={() => { enviarProGoogle(t); setMenuAberto(null); }} disabled={enviando === t.id}>
-                                  {enviando === t.id ? <Loader2 size={14} className="df-spin" /> : enviados[t.id] ? <CheckCheck size={14} color="#1c7a4d" /> : <Send size={14} />}
+                                  {enviando === t.id ? <Loader2 size={14} className="df-spin" /> : enviados[t.id] ? <CheckCheck size={14} color="var(--green)" /> : <Send size={14} />}
                                   {enviados[t.id] ? "Enviado ao Google" : "Enviar ao Google Calendar"}
                                 </button>
                               ) : (
@@ -151,7 +151,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
         <div className="df-card" style={{ marginTop: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
             <p className="df-section-label" style={{ margin: 0 }}>Novo bloco de tempo</p>
-            <button className="df-icon-btn" onClick={() => setFormAberto(false)} style={{ fontSize: 12, color: "#5b6272" }}>Cancelar</button>
+            <button className="df-icon-btn" onClick={() => setFormAberto(false)} style={{ fontSize: 12, color: "var(--ink-soft)" }}>Cancelar</button>
           </div>
 
           <input
@@ -182,7 +182,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
           </div>
 
           <div style={{ marginBottom: 14 }}>
-            <p style={{ margin: "0 0 6px", fontSize: 11.5, color: "#5b6272", fontWeight: 700 }}>Prioridade</p>
+            <p style={{ margin: "0 0 6px", fontSize: 11.5, color: "var(--ink-soft)", fontWeight: 700 }}>Prioridade</p>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {Object.entries(LABEL_PRIORIDADE).map(([valor, label]) => (
                 <button
@@ -191,9 +191,9 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
                   onClick={() => setNovo({ ...novo, prioridade: valor })}
                   className="df-prioridade-opcao"
                   style={{
-                    borderColor: novo.prioridade === valor ? COR_PRIORIDADE[valor] : "#e1e5f0",
-                    background: novo.prioridade === valor ? `${COR_PRIORIDADE[valor]}14` : "#fff",
-                    color: novo.prioridade === valor ? COR_PRIORIDADE[valor] : "#5b6272",
+                    borderColor: novo.prioridade === valor ? COR_PRIORIDADE[valor] : "var(--line)",
+                    background: novo.prioridade === valor ? "var(--blue-pale)" : "var(--white)",
+                    color: novo.prioridade === valor ? COR_PRIORIDADE[valor] : "var(--ink-soft)",
                   }}
                 >
                   <span className="df-prioridade-dot" style={{ background: COR_PRIORIDADE[valor] }} /> {label}
@@ -208,7 +208,7 @@ export function AgendaView({ dados, persist, selectedDate, setSelectedDate, goog
         </div>
       )}
 
-      <p style={{ margin: "12px 0 0", fontSize: 11.5, color: "#5b6272", textAlign: "center" }}>
+      <p style={{ margin: "12px 0 0", fontSize: 11.5, color: "var(--ink-soft)", textAlign: "center" }}>
         O ícone <Download size={12} style={{ verticalAlign: -2 }} /> baixa um .ics (abre no Apple Calendar, Outlook…). O <MoreHorizontal size={12} style={{ verticalAlign: -2 }} /> tem mais opções (Google Calendar, remover).
       </p>
     </div>
@@ -220,7 +220,7 @@ function DateNav({ selectedDate, setSelectedDate }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <div>
-        <p style={{ margin: 0, fontSize: 11.5, color: "#5b6272", textTransform: "capitalize" }}>{fmtDiaSemana(selectedDate)}</p>
+        <p style={{ margin: 0, fontSize: 11.5, color: "var(--ink-soft)", textTransform: "capitalize" }}>{fmtDiaSemana(selectedDate)}</p>
         <h2 style={{ margin: "2px 0 0", fontSize: 20, fontWeight: 800 }}>{fmtDataLonga(selectedDate)}</h2>
       </div>
       <div style={{ display: "flex", gap: 6 }}>

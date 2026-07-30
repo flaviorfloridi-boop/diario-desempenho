@@ -53,7 +53,7 @@ export function TopBar({ dados, notifAtivas, ativarNotificacoes }) {
 function Placar({ icon: Icon, valor, label }) {
   return (
     <div className="df-placar">
-      <Icon size={14} color="#4d7bff" />
+      <Icon size={14} color="var(--blue-bright)" />
       <p className="df-placar-valor">{valor}</p>
       <p className="df-placar-label">{label}</p>
     </div>

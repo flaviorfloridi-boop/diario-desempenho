@@ -14,8 +14,8 @@ export default defineConfig({
         name: 'Diário de Desempenho',
         short_name: 'Desempenho',
         description: 'Agenda, estudos, treinos e feedback de IA — acadêmico e esportivo.',
-        theme_color: '#0b0e14',
-        background_color: '#f4f6fb',
+        theme_color: '#000000',
+        background_color: '#0a0c12',
         display: 'standalone',
         start_url: '/diario-desempenho/',
         icons: [
